@@ -99,6 +99,11 @@ type ResearchGoal = {
   text: string;
 };
 
+type ReferenceItem = {
+  title: string;
+  source: string;
+};
+
 /* -------------------------------------------------------------------------- */
 /* DATA                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -113,7 +118,9 @@ const navigationLinks: NavigationLink[] = [
   { href: "#penelitian", label: "Penelitian" },
   { href: "#pengamatan", label: "Pengamatan" },
   { href: "#kesimpulan", label: "Kesimpulan" },
+  { href: "#saran", label: "Saran" },
   { href: "#food-waste", label: "Food waste" },
+  { href: "#tentang-proyek", label: "Tentang proyek" },
 ];
 
 const processSteps: ProcessStep[] = [
@@ -195,17 +202,20 @@ const researchSteps = [
   {
     number: "02",
     title: "Pembuatan indikator",
-    text: "Ekstrak digunakan sebagai bahan indikator alami.",
+    text:
+      "Ekstrak digunakan sebagai bahan indikator alami.",
   },
   {
     number: "03",
     title: "Integrasi kemasan",
-    text: "Indikator ditempatkan pada sistem kemasan Freshcoy.",
+    text:
+      "Indikator ditempatkan pada sistem kemasan Freshcoy.",
   },
   {
     number: "04",
     title: "Penyimpanan pakcoy",
-    text: "Pakcoy ditempatkan dalam kondisi penyimpanan penelitian.",
+    text:
+      "Pakcoy ditempatkan dalam kondisi penyimpanan penelitian.",
   },
   {
     number: "05",
@@ -273,34 +283,35 @@ const storageSteps: StorageStep[] = [
 const observationRows = [
   {
     day: "Hari 1",
-    color: "[UNGU]",
-    condition: "[Masih terlihat segar]",
+    color: "UNGU",
+    condition:
+      "Masih terlihat segar.",
     note:
-      "[Pakcoy yang baru di packing merupakan pakcoy yang masih segar]",
+      "Pakcoy yang baru dipacking masih dalam kondisi segar.",
   },
   {
     day: "Hari 2",
-    color: "[UNGU]",
+    color: "UNGU",
     condition:
-      "[Pakcoy masih cukup segar, tetapi mulai ada sedikit perubahan pada daun]",
+      "Pakcoy masih cukup segar, tetapi mulai ada sedikit perubahan pada daun.",
     note:
-      "[Indikator belum menunjukkan perubahan warna yang jelas]",
+      "Indikator belum menunjukkan perubahan warna yang jelas.",
   },
   {
     day: "Hari 3",
-    color: "[UNGU]",
+    color: "UNGU",
     condition:
-      "[Daun mulai mengalami perubahan warna dan terlihat lebih layu]",
+      "Daun mulai mengalami perubahan warna dan terlihat lebih layu.",
     note:
-      "[Indikator belum berubah. Hal ini kemungkinan karena kertas saring dipasang terlalu cepat setelah direndam dalam ekstrak kol ungu, sehingga ekstrak belum meresap dengan maksimal]",
+      "Indikator belum berubah. Hal ini kemungkinan karena kertas saring dipasang terlalu cepat setelah direndam dalam ekstrak kol ungu, sehingga ekstrak belum meresap dengan maksimal.",
   },
   {
     day: "Hari 4",
-    color: "[KUNING]",
+    color: "KUNING",
     condition:
-      "[Daun pakcoy semakin layu dan perubahan warna semakin terlihat]",
+      "Daun pakcoy semakin layu dan perubahan warna semakin terlihat.",
     note:
-      "[Indikator berubah dari ungu menjadi kuning saat kondisi pakcoy semakin menurun]",
+      "Indikator berubah dari ungu menjadi kuning saat kondisi pakcoy semakin menurun.",
   },
 ];
 
@@ -405,12 +416,12 @@ const timelineItems: TimelineItem[] = [
 ];
 
 /*
- * INTERACTIVE INDICATOR
+ * WARNA INTERACTIVE INDICATOR
  *
- * Ungu  = masih bagus
- * Hijau  = kurang segar
- * Kuning = tidak segar tetapi masih bisa dikonsumsi
- * Pink   = busuk
+ * 0 = Ungu  → masih bagus
+ * 1 = Hijau  → kurang segar
+ * 2 = Kuning → tidak segar tetapi masih bisa dikonsumsi
+ * 3 = Pink   → busuk
  */
 const interactiveIndicatorColors = [
   "#6c43a4",
@@ -419,15 +430,9 @@ const interactiveIndicatorColors = [
   "#dc6b8a",
 ];
 
-/*
- * DATA INTERACTIVE INDICATOR
- *
- * Dibuat terpisah dari `stages` agar warna dan keterangannya
- * selalu mengikuti urutan yang benar.
- */
 const interactiveStages: FreshnessStage[] = [
   {
-    ...stages[0],
+    ...(stages[0] ?? {}),
     id: "interactive-purple",
     label: "Ungu",
     title: "Masih bagus",
@@ -438,7 +443,7 @@ const interactiveStages: FreshnessStage[] = [
     color: interactiveIndicatorColors[0],
   },
   {
-    ...stages[1],
+    ...(stages[1] ?? {}),
     id: "interactive-green",
     label: "Hijau",
     title: "Kurang segar",
@@ -449,10 +454,11 @@ const interactiveStages: FreshnessStage[] = [
     color: interactiveIndicatorColors[1],
   },
   {
-    ...stages[2],
+    ...(stages[2] ?? {}),
     id: "interactive-yellow",
     label: "Kuning",
-    title: "Tidak segar tetapi masih bisa dikonsumsi",
+    title:
+      "Tidak segar tetapi masih bisa dikonsumsi",
     description:
       "Pakcoy menunjukkan penurunan kualitas yang lebih terlihat. Kondisi fisiknya perlu diperiksa sebelum digunakan.",
     action:
@@ -460,7 +466,7 @@ const interactiveStages: FreshnessStage[] = [
     color: interactiveIndicatorColors[2],
   },
   {
-    ...stages[3],
+    ...(stages[3] ?? {}),
     id: "interactive-pink",
     label: "Pink",
     title: "Busuk",
@@ -472,11 +478,38 @@ const interactiveStages: FreshnessStage[] = [
   },
 ];
 
+/*
+ * WARNA HASIL PENGAMATAN
+ *
+ * Hasil penelitian yang dicatat:
+ * Hari 1 = Ungu
+ * Hari 2 = Ungu
+ * Hari 3 = Ungu
+ * Hari 4 = Kuning
+ */
 const observationIndicatorColors = [
   "#6c43a4",
   "#6c43a4",
   "#6c43a4",
   "#c1a044",
+];
+
+/*
+ * WARNA BAGIAN SAINS / ANTOSIANIN
+ *
+ * Nama ilmiahnya tetap:
+ * Flavylium
+ * Quinoidal
+ * Carbinol pseudobase
+ * Chalcone
+ *
+ * Yang disamakan adalah hirarki warna visual.
+ */
+const chemistryColors = [
+  "#6c43a4", // Flavylium = Ungu
+  "#5b9b55", // Quinoidal = Hijau
+  "#c1a044", // Carbinol pseudobase = Kuning
+  "#dc6b8a", // Chalcone = Pink
 ];
 
 const researchGoals: ResearchGoal[] = [
@@ -505,9 +538,36 @@ const conclusions = [
 
 const suggestions = [
   "Jumlah sampel dan pengulangan penelitian dapat diperbanyak agar hasil yang diperoleh lebih kuat.",
-  "Pengujian dapat dilakukan pada beberapa kondisi suhu dan kelembapan yang lebih terkontrol.",
-  "Hubungan antara perubahan warna indikator dan kualitas pakcoy belum dikalibrasi secara kuantitatif sehingga perlu dilakukan pengujian lanjutan.",
+  "Pengujian pada beberapa kondisi suhu dan kelembapan yang lebih terkontrol belum dilakukan secara luas dan perlu diteliti lebih lanjut.",
+  "Hubungan antara perubahan warna indikator dan kualitas pakcoy belum dikalibrasi secara kuantitatif.",
   "Stabilitas indikator selama penyimpanan dan ketahanan indikator pada berbagai kondisi kemasan masih perlu diuji lebih lanjut.",
+];
+
+const references: ReferenceItem[] = [
+  {
+    title:
+      "A review on colorimetric indicators for monitoring product freshness in intelligent food packaging",
+    source:
+      "Comprehensive Reviews in Food Science and Food Safety, 2022 • DOI: 10.1111/1541-4337.12942",
+  },
+  {
+    title:
+      "Recent advances in anthocyanin-based films and its application in sustainable intelligent food packaging",
+    source:
+      "Food Control, 2024 • DOI: 10.1016/j.foodcont.2024.110431",
+  },
+  {
+    title:
+      "Recent advances in the development and application of anthocyanin-based intelligent active food packaging: a review",
+    source:
+      "Food Chemistry, 2025 • DOI: 10.1016/j.foodchem.2025.145309",
+  },
+  {
+    title:
+      "Intelligent packaging films based on anthocyanins: A review of structural properties, biodegradable polymers, application and prospects in food freshness monitoring",
+    source:
+      "Food Chemistry: X, 2026 • DOI: 10.1016/j.fochx.2026.103634",
+  },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -525,9 +585,18 @@ function FadeIn({
 }) {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 22 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
+      initial={{
+        opacity: 0,
+        y: 22,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.2,
+      }}
       transition={{
         duration: 0.65,
         delay,
@@ -541,7 +610,8 @@ function FadeIn({
 }
 
 function Nav() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] =
+    useState(false);
 
   return (
     <header className="sticky top-0 z-50 border-b border-[var(--line)] bg-[#f7f7f2]/90 backdrop-blur-xl">
@@ -560,16 +630,18 @@ function Nav() {
           <span>FRESHCOY</span>
         </a>
 
-        <nav className="hidden items-center gap-6 md:flex">
-          {navigationLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-[#66706a] transition hover:text-[#173a24]"
-            >
-              {link.label}
-            </a>
-          ))}
+        <nav className="hidden items-center gap-5 xl:flex">
+          {navigationLinks.map(
+            (link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-sm text-[#66706a] transition hover:text-[#173a24]"
+              >
+                {link.label}
+              </a>
+            ),
+          )}
 
           <a
             href="#demo"
@@ -582,11 +654,17 @@ function Nav() {
         <button
           type="button"
           aria-label={
-            open ? "Tutup menu" : "Buka menu"
+            open
+              ? "Tutup menu"
+              : "Buka menu"
           }
           aria-expanded={open}
-          onClick={() => setOpen((value) => !value)}
-          className="grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-white md:hidden"
+          onClick={() =>
+            setOpen(
+              (value) => !value,
+            )
+          }
+          className="grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-white xl:hidden"
         >
           {open ? (
             <X size={18} />
@@ -599,26 +677,41 @@ function Nav() {
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="border-t border-[var(--line)] bg-[#f7f7f2] md:hidden"
+            initial={{
+              height: 0,
+              opacity: 0,
+            }}
+            animate={{
+              height: "auto",
+              opacity: 1,
+            }}
+            exit={{
+              height: 0,
+              opacity: 0,
+            }}
+            className="border-t border-[var(--line)] bg-[#f7f7f2] xl:hidden"
           >
             <div className="container-shell grid gap-1 py-3">
-              {navigationLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className="rounded-xl px-3 py-3 text-sm text-[#46534a] hover:bg-white"
-                >
-                  {link.label}
-                </a>
-              ))}
+              {navigationLinks.map(
+                (link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    onClick={() =>
+                      setOpen(false)
+                    }
+                    className="rounded-xl px-3 py-3 text-sm text-[#46534a] hover:bg-white"
+                  >
+                    {link.label}
+                  </a>
+                ),
+              )}
 
               <a
                 href="#demo"
-                onClick={() => setOpen(false)}
+                onClick={() =>
+                  setOpen(false)
+                }
                 className="mt-1 rounded-xl bg-[#173a24] px-3 py-3 text-sm font-semibold text-white"
               >
                 Buka Demo
@@ -658,7 +751,8 @@ function PackMock({
         <span
           className="h-2 w-2 rounded-full"
           style={{
-            background: stage.color,
+            background:
+              stage.color,
           }}
         />
 
@@ -693,7 +787,8 @@ function PackMock({
               {[0, 1, 2, 3, 4].map(
                 (leafIndex) => {
                   const rotation =
-                    (leafIndex - 2) * 8;
+                    (leafIndex - 2) *
+                    8;
 
                   return (
                     <div
@@ -723,7 +818,8 @@ function PackMock({
             <div className="mt-2 flex items-center gap-3">
               <motion.div
                 animate={{
-                  backgroundColor: stage.color,
+                  backgroundColor:
+                    stage.color,
                 }}
                 transition={{
                   duration: 0.5,
@@ -796,96 +892,103 @@ export default function FreshcoyApp() {
       () => [
         {
           name: "Flavylium",
-          tone: "Merah–ungu",
+          tone: "Ungu",
           text:
             "Bentuk kation yang dominan pada kondisi asam dan menjadi salah satu bentuk struktur yang berkontribusi terhadap warna merah atau ungu antosianin.",
         },
         {
           name: "Quinoidal",
-          tone: "Biru–ungu",
+          tone: "Hijau",
           text:
-            "Perubahan kondisi dapat menyebabkan perpindahan proton dan perubahan kesetimbangan struktur. Bentuk quinoidal dapat muncul dan menyebabkan perubahan warna ke arah biru atau ungu.",
+            "Perubahan kondisi dapat menyebabkan perpindahan proton dan perubahan kesetimbangan struktur. Pada konsep visual Freshcoy, tahap ini ditampilkan dengan warna hijau.",
         },
         {
           name: "Carbinol pseudobase",
-          tone: "Sangat pucat",
+          tone: "Kuning",
           text:
-            "Hidrasi pada struktur antosianin dapat menghasilkan bentuk pseudobase yang memiliki warna lebih lemah dibandingkan bentuk berwarna sebelumnya.",
+            "Hidrasi pada struktur antosianin dapat menghasilkan bentuk pseudobase yang memiliki warna lebih lemah dibandingkan bentuk berwarna sebelumnya. Pada konsep visual Freshcoy, tahap ini ditampilkan dengan warna kuning.",
         },
         {
           name: "Chalcone",
-          tone: "Kuning–pucat",
+          tone: "Pink",
           text:
-            "Kesetimbangan lanjutan dapat menuju bentuk chalcone. Warna yang terlihat dipengaruhi struktur molekul dan kondisi lingkungan.",
+            "Kesetimbangan lanjutan dapat menuju bentuk chalcone. Warna yang terlihat dipengaruhi struktur molekul dan kondisi lingkungan. Pada konsep visual Freshcoy, tahap ini ditampilkan dengan warna pink.",
         },
       ],
       [],
     );
 
-  const chemistryColors: string[] = [
-    "#6c43a4",
-    "#4e77b4",
-    "#dfe3d5",
-    "#c1a044",
-  ];
+  const updateStage = (
+    index: number,
+  ) => {
+    const safeIndex =
+      Math.max(
+        0,
+        Math.min(
+          index,
+          interactiveStages.length -
+            1,
+        ),
+      );
 
-  const updateStage = (index: number) => {
-    const safeIndex = Math.max(
-      0,
-      Math.min(
-        index,
-        interactiveStages.length - 1,
-      ),
+    setStageIndex(
+      safeIndex,
     );
-
-    setStageIndex(safeIndex);
   };
 
   const next = async () => {
     try {
-      const response = await fetch(
-        "/api/freshness",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json",
+      const response =
+        await fetch(
+          "/api/freshness",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+            body: JSON.stringify({
+              stage: stageIndex,
+            }),
           },
-          body: JSON.stringify({
-            stage: stageIndex,
-          }),
-        },
-      );
+        );
 
       if (response.ok) {
         const payload: unknown =
           await response.json();
 
         if (
-          typeof payload === "object" &&
+          typeof payload ===
+            "object" &&
           payload !== null &&
           "stage" in payload
         ) {
-          const serverStage = (
-            payload as {
-              stage?: unknown;
-            }
-          ).stage;
+          const serverStage =
+            (
+              payload as {
+                stage?: unknown;
+              }
+            ).stage;
 
           if (
-            typeof serverStage === "number" &&
-            Number.isInteger(serverStage) &&
+            typeof serverStage ===
+              "number" &&
+            Number.isInteger(
+              serverStage,
+            ) &&
             serverStage >= 0 &&
             serverStage <
               interactiveStages.length
           ) {
-            setStageIndex(serverStage);
+            setStageIndex(
+              serverStage,
+            );
             return;
           }
         }
       }
     } catch {
-      // Fallback lokal.
+      // Fallback lokal jika API belum tersedia.
     }
 
     setStageIndex(
@@ -1158,7 +1261,8 @@ export default function FreshcoyApp() {
                         </div>
 
                         <div className="mt-3 text-xs font-bold uppercase tracking-[.12em] text-[#7a857d]">
-                          Indikator {stage.label}
+                          Indikator{" "}
+                          {stage.label}
                         </div>
 
                         <p className="body-copy mt-4 max-w-xl break-words text-sm leading-6 sm:text-base">
@@ -1180,16 +1284,22 @@ export default function FreshcoyApp() {
 
                   <div className="mt-9 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                     {interactiveStages.map(
-                      (item, index) => (
+                      (
+                        item,
+                        index,
+                      ) => (
                         <button
                           type="button"
                           key={item.id}
                           aria-label={`Pilih ${item.label}`}
                           onClick={() =>
-                            updateStage(index)
+                            updateStage(
+                              index,
+                            )
                           }
                           className={`min-h-10 rounded-full border px-3 py-2 text-xs font-bold transition sm:px-4 ${
-                            index === stageIndex
+                            index ===
+                            stageIndex
                               ? "border-[#173a24] bg-[#173a24] text-white"
                               : "border-[#d7e0d7] bg-white text-[#58645b] hover:border-[#aab8ad]"
                           }`}
@@ -1216,12 +1326,17 @@ export default function FreshcoyApp() {
             <FadeIn delay={0.08}>
               <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {interactiveStages.map(
-                  (item, index) => (
+                  (
+                    item,
+                    index,
+                  ) => (
                     <button
                       type="button"
                       key={item.id}
                       onClick={() =>
-                        updateStage(index)
+                        updateStage(
+                          index,
+                        )
                       }
                       className="rounded-2xl border border-[#dde5dd] bg-[#f7f8f3] p-5 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
                     >
@@ -1279,13 +1394,20 @@ export default function FreshcoyApp() {
 
                 <div className="relative border-l border-[#cbd5cc] pl-7">
                   {processSteps.map(
-                    (step, index) => {
-                      const Icon = step.icon;
+                    (
+                      step,
+                      index,
+                    ) => {
+                      const Icon =
+                        step.icon;
 
                       return (
                         <FadeIn
                           key={step.number}
-                          delay={index * 0.08}
+                          delay={
+                            index *
+                            0.08
+                          }
                           className="relative pb-12 last:pb-0"
                         >
                           <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#eef2ea] text-[10px] font-black text-[#526158]">
@@ -1346,19 +1468,26 @@ export default function FreshcoyApp() {
 
                 <div className="flex flex-wrap gap-2">
                   {chemistry.map(
-                    (item, index) => (
+                    (
+                      item,
+                      index,
+                    ) => (
                       <button
                         type="button"
                         key={item.name}
                         onClick={() =>
-                          setChem(index)
+                          setChem(
+                            index,
+                          )
                         }
                         className={`rounded-full border px-4 py-2.5 text-xs font-bold transition ${
-                          index === chem
+                          index ===
+                          chem
                             ? "border-white bg-white text-[#17301f]"
                             : "border-white/15 bg-white/[.03] text-white/70 hover:bg-white/10"
                         }`}
                       >
+                        <span className="mr-2 inline-block h-2.5 w-2.5 rounded-full align-middle" style={{ background: chemistryColors[index] }} />
                         {item.name}
                       </button>
                     ),
@@ -1391,8 +1520,13 @@ export default function FreshcoyApp() {
             <div className="mt-12 grid gap-px overflow-hidden rounded-[32px] border border-white/10 bg-white/10 md:grid-cols-[1.02fr_.98fr]">
               <div className="min-h-[430px] bg-[#0d1812] p-8 sm:p-12">
                 <div className="flex items-center justify-between text-[10px] font-black uppercase tracking-[.16em] text-[#839489]">
-                  <span>Structural map</span>
-                  <span>04 states</span>
+                  <span>
+                    Structural map
+                  </span>
+
+                  <span>
+                    04 states
+                  </span>
                 </div>
 
                 <div className="relative mt-10 h-[310px]">
@@ -1408,7 +1542,9 @@ export default function FreshcoyApp() {
 
                   <AnimatePresence mode="wait">
                     <motion.div
-                      key={chem}
+                      key={
+                        chem
+                      }
                       initial={{
                         opacity: 0,
                         scale: 0.8,
@@ -1433,12 +1569,18 @@ export default function FreshcoyApp() {
                         className="h-20 w-20 rotate-12 rounded-[35%] border-2 border-white/60"
                         style={{
                           background:
-                            chemistryColors[chem],
+                            chemistryColors[
+                              chem
+                            ],
                         }}
                       />
 
                       <div className="absolute translate-y-[76px] text-[10px] font-black uppercase tracking-[.12em]">
-                        {chemistry[chem].name}
+                        {
+                          chemistry[
+                            chem
+                          ].name
+                        }
                       </div>
                     </motion.div>
                   </AnimatePresence>
@@ -1478,12 +1620,22 @@ export default function FreshcoyApp() {
                     }}
                   >
                     <div
-                      className="mt-7 inline-flex rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[.12em]"
+                      className="mt-7 inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[.12em]"
                       style={{
                         background: `${chemistryColors[chem]}33`,
                         color: "#e8f1e8",
                       }}
                     >
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{
+                          background:
+                            chemistryColors[
+                              chem
+                            ],
+                        }}
+                      />
+
                       {chemistry[chem].tone}
                     </div>
 
@@ -1566,13 +1718,20 @@ export default function FreshcoyApp() {
 
             <div className="mt-12 grid gap-4 md:grid-cols-2">
               {guideCards.map(
-                (card, index) => {
-                  const Icon = card.icon;
+                (
+                  card,
+                  index,
+                ) => {
+                  const Icon =
+                    card.icon;
 
                   return (
                     <FadeIn
                       key={card.title}
-                      delay={index * 0.08}
+                      delay={
+                        index *
+                        0.08
+                      }
                     >
                       <div className="rounded-[28px] border border-[#dde5dd] bg-[#f7f8f3] p-7 sm:p-8">
                         <div className="flex items-center gap-3">
@@ -1589,7 +1748,9 @@ export default function FreshcoyApp() {
                           {card.items.map(
                             (item) => (
                               <li
-                                key={item}
+                                key={
+                                  item
+                                }
                                 className="flex gap-3 text-sm text-[#536158]"
                               >
                                 <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fb596]" />
@@ -1607,9 +1768,11 @@ export default function FreshcoyApp() {
             </div>
 
             <div className="mt-5 rounded-[28px] border border-[#eadcae] bg-[#fbf7e8] p-6 text-sm leading-6 text-[#665a2f]">
-              <strong>Catatan penting:</strong> warna indikator hanya alat
-              bantu. Jangan menentukan kelayakan konsumsi hanya berdasarkan
-              indikator.
+              <strong>
+                Catatan penting:
+              </strong>{" "}
+              warna indikator hanya alat bantu. Jangan menentukan kelayakan
+              konsumsi hanya berdasarkan indikator.
             </div>
           </div>
         </section>
@@ -1639,10 +1802,16 @@ export default function FreshcoyApp() {
 
                 <div className="space-y-3">
                   {storageSteps.map(
-                    (step, index) => (
+                    (
+                      step,
+                      index,
+                    ) => (
                       <FadeIn
                         key={step.number}
-                        delay={index * 0.05}
+                        delay={
+                          index *
+                          0.05
+                        }
                       >
                         <div className="group flex gap-5 rounded-2xl border border-[#dfe6df] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-[0_16px_45px_rgba(33,56,40,.08)]">
                           <div className="text-xs font-black text-[#94a095]">
@@ -1695,18 +1864,27 @@ export default function FreshcoyApp() {
                   </p>
 
                   <div className="mt-6 rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-xs leading-6 text-[#665a2f]">
-                    <strong>Penting:</strong> rincian suhu, kelembapan, jumlah
-                    sampel, dan lama pengamatan harus disesuaikan dengan
-                    metode penelitian yang benar-benar dilakukan oleh tim.
+                    <strong>
+                      Penting:
+                    </strong>{" "}
+                    rincian suhu, kelembapan, jumlah sampel, dan lama pengamatan
+                    harus disesuaikan dengan metode penelitian yang benar-benar
+                    dilakukan oleh tim.
                   </div>
                 </div>
 
                 <div className="relative border-l border-[#cbd5cc] pl-7">
                   {treatmentSteps.map(
-                    (step, index) => (
+                    (
+                      step,
+                      index,
+                    ) => (
                       <FadeIn
                         key={step.number}
-                        delay={index * 0.06}
+                        delay={
+                          index *
+                          0.06
+                        }
                         className="relative pb-10 last:pb-0"
                       >
                         <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-white text-[10px] font-black text-[#526158]">
@@ -1761,10 +1939,16 @@ export default function FreshcoyApp() {
 
                 <div className="relative border-l border-[#cbd5cc] pl-7">
                   {timelineItems.map(
-                    (item, index) => (
+                    (
+                      item,
+                      index,
+                    ) => (
                       <FadeIn
                         key={item.time}
-                        delay={index * 0.08}
+                        delay={
+                          index *
+                          0.08
+                        }
                         className="relative pb-10 last:pb-0"
                       >
                         <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#f3f5ef]">
@@ -1834,7 +2018,7 @@ export default function FreshcoyApp() {
 
                   <p className="mt-2 text-sm leading-6 text-[#66706a]">
                     Metabolisme dan perubahan kondisi penyimpanan dapat
-                    mengubah lingkungan mikro di dalam kemasan. Kondisi tersebut
+                    mengubah lingkungan mikro di dalam kemasan. Perubahan ini
                     dapat berkaitan dengan respons indikator antosianin.
                   </p>
                 </div>
@@ -1892,10 +2076,16 @@ export default function FreshcoyApp() {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   {researchSteps.map(
-                    (step, index) => (
+                    (
+                      step,
+                      index,
+                    ) => (
                       <FadeIn
                         key={step.number}
-                        delay={index * 0.04}
+                        delay={
+                          index *
+                          0.04
+                        }
                       >
                         <div className="rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-5">
                           <div className="flex items-center justify-between gap-4">
@@ -1980,9 +2170,14 @@ export default function FreshcoyApp() {
 
                     <tbody className="divide-y divide-[#e4e9e3] text-sm text-[#59655c]">
                       {observationRows.map(
-                        (row, index) => (
+                        (
+                          row,
+                          index,
+                        ) => (
                           <motion.tr
-                            key={row.day}
+                            key={
+                              row.day
+                            }
                             initial={{
                               opacity: 0,
                               y: 8,
@@ -1997,7 +2192,9 @@ export default function FreshcoyApp() {
                             }}
                             transition={{
                               duration: 0.4,
-                              delay: index * 0.06,
+                              delay:
+                                index *
+                                0.06,
                               ease,
                             }}
                             className="transition hover:bg-[#fbfcf9]"
@@ -2005,12 +2202,13 @@ export default function FreshcoyApp() {
                             <td className="px-5 py-5 align-top">
                               <div className="flex items-center gap-3">
                                 <span
-                                  className="h-2.5 w-2.5 rounded-full"
+                                  className="h-2.5 w-2.5 shrink-0 rounded-full"
                                   style={{
                                     background:
                                       observationIndicatorColors[
                                         index
-                                      ] ?? "#94a095",
+                                      ] ??
+                                      "#94a095",
                                   }}
                                 />
 
@@ -2022,16 +2220,28 @@ export default function FreshcoyApp() {
 
                             <td className="px-5 py-5 align-top">
                               <span
-                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ${
-                                  index === 0
-                                    ? "bg-[#f0eafa] text-[#65468e]"
-                                    : index === 1
-                                      ? "bg-[#f0eafa] text-[#65468e]"
-                                      : index === 2
-                                        ? "bg-[#f0eafa] text-[#65468e]"
-                                        : "bg-[#f8f2dd] text-[#806f32]"
-                                }`}
+                                className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold"
+                                style={{
+                                  background:
+                                    `${observationIndicatorColors[index] ?? "#94a095"}18`,
+                                  color:
+                                    observationIndicatorColors[
+                                      index
+                                    ] ??
+                                    "#526158",
+                                }}
                               >
+                                <span
+                                  className="h-2.5 w-2.5 rounded-full"
+                                  style={{
+                                    background:
+                                      observationIndicatorColors[
+                                        index
+                                      ] ??
+                                      "#94a095",
+                                  }}
+                                />
+
                                 {row.color}
                               </span>
                             </td>
@@ -2057,9 +2267,9 @@ export default function FreshcoyApp() {
                     <p className="text-xs leading-6 text-[#66706a]">
                       Hasil pengamatan menunjukkan adanya perubahan warna
                       indikator yang diamati bersamaan dengan perubahan kondisi
-                      fisik pakcoy selama penyimpanan. Data ini digunakan
-                      sebagai bahan pengamatan dan bukan sebagai satu-satunya
-                      dasar untuk menentukan keamanan pangan.
+                      fisik pakcoy selama penyimpanan. Data ini digunakan sebagai
+                      bahan pengamatan dan bukan sebagai satu-satunya dasar untuk
+                      menentukan keamanan pangan.
                     </p>
                   </div>
                 </div>
@@ -2079,7 +2289,7 @@ export default function FreshcoyApp() {
 
                   <p className="mt-2 text-sm leading-6 text-[#66706a]">
                     Pakcoy masih tampak segar dan indikator berada pada warna
-                    awal.
+                    ungu.
                   </p>
                 </div>
 
@@ -2089,12 +2299,12 @@ export default function FreshcoyApp() {
                   </div>
 
                   <h3 className="mt-4 text-lg font-black text-[#25372b]">
-                    Warna indikator mulai bergeser
+                    Kondisi fisik mulai berubah
                   </h3>
 
                   <p className="mt-2 text-sm leading-6 text-[#66706a]">
-                    Perubahan warna menjadi salah satu informasi yang diamati
-                    bersama kondisi fisik pakcoy.
+                    Pada hari ke-2 dan ke-3, perubahan fisik mulai terlihat
+                    sementara indikator masih berwarna ungu.
                   </p>
                 </div>
 
@@ -2128,12 +2338,11 @@ export default function FreshcoyApp() {
                     </h3>
 
                     <p className="mt-2 text-sm leading-6 text-[#6f6338]">
-                      Pada pengamatan, indikator belum menunjukkan perubahan
-                      warna yang jelas pada hari ke-1 sampai hari ke-3.
-                      Perubahan indikator terlihat pada hari ke-4 ketika kondisi
-                      pakcoy semakin menurun. Hal ini menunjukkan bahwa waktu
-                      pemasangan indikator juga perlu diperhatikan dalam proses
-                      penelitian.
+                      Pada pengamatan, indikator belum menunjukkan perubahan warna
+                      yang jelas pada hari ke-1 sampai hari ke-3. Perubahan
+                      indikator terlihat pada hari ke-4 ketika kondisi pakcoy
+                      semakin menurun. Hal ini menunjukkan bahwa waktu pemasangan
+                      indikator juga perlu diperhatikan dalam proses penelitian.
                     </p>
                   </div>
                 </div>
@@ -2164,8 +2373,8 @@ export default function FreshcoyApp() {
 
                   <p className="body-copy mt-5 max-w-md">
                     Freshcoy tidak membaca warna secara terpisah. Indikator,
-                    kondisi fisik, dan kondisi penyimpanan dipakai bersama
-                    untuk memahami perubahan selama penyimpanan.
+                    kondisi fisik, dan kondisi penyimpanan dipakai bersama untuk
+                    memahami perubahan selama penyimpanan.
                   </p>
                 </div>
 
@@ -2173,13 +2382,15 @@ export default function FreshcoyApp() {
                   {(
                     [
                       {
-                        title: "Indikator warna",
+                        title:
+                          "Indikator warna",
                         text:
                           "Perubahan warna pada indikator Freshcoy.",
                         icon: FlaskConical,
                       },
                       {
-                        title: "Kondisi fisik",
+                        title:
+                          "Kondisi fisik",
                         text:
                           "Warna daun, kesegaran, tekstur, batang, dan kerusakan yang terlihat.",
                         icon: Sprout,
@@ -2193,14 +2404,22 @@ export default function FreshcoyApp() {
                       },
                     ] satisfies InfoCard[]
                   ).map(
-                    (card, index) => {
+                    (
+                      card,
+                      index,
+                    ) => {
                       const Icon =
                         card.icon;
 
                       return (
                         <FadeIn
-                          key={card.title}
-                          delay={index * 0.07}
+                          key={
+                            card.title
+                          }
+                          delay={
+                            index *
+                            0.07
+                          }
                         >
                           <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
                             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#315f3f] shadow-sm">
@@ -2208,11 +2427,15 @@ export default function FreshcoyApp() {
                             </div>
 
                             <h3 className="mt-7 font-black">
-                              {card.title}
+                              {
+                                card.title
+                              }
                             </h3>
 
                             <p className="mt-2 text-xs leading-6 text-[#66706a]">
-                              {card.text}
+                              {
+                                card.text
+                              }
                             </p>
                           </div>
                         </FadeIn>
@@ -2224,8 +2447,10 @@ export default function FreshcoyApp() {
             </FadeIn>
 
             <div className="mt-6 rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-sm leading-6 text-[#665a2f]">
-              <strong>Ingat:</strong> indikator bukan satu-satunya penentu
-              kualitas atau keamanan pangan.
+              <strong>
+                Ingat:
+              </strong>{" "}
+              indikator bukan satu-satunya penentu kualitas atau keamanan pangan.
             </div>
           </div>
         </section>
@@ -2251,14 +2476,22 @@ export default function FreshcoyApp() {
 
             <div className="mt-10 grid gap-3 md:grid-cols-2">
               {projectComponents.map(
-                (component, index) => {
+                (
+                  component,
+                  index,
+                ) => {
                   const Icon =
                     component.icon;
 
                   return (
                     <FadeIn
-                      key={component.title}
-                      delay={index * 0.07}
+                      key={
+                        component.title
+                      }
+                      delay={
+                        index *
+                        0.07
+                      }
                     >
                       <div className="flex gap-4 rounded-[22px] border border-[#dfe6df] bg-white p-6">
                         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#eef4ed] text-[#2b613c]">
@@ -2267,11 +2500,15 @@ export default function FreshcoyApp() {
 
                         <div>
                           <h3 className="font-black">
-                            {component.title}
+                            {
+                              component.title
+                            }
                           </h3>
 
                           <p className="mt-1 text-sm leading-6 text-[#66706a]">
-                            {component.text}
+                            {
+                              component.text
+                            }
                           </p>
                         </div>
                       </div>
@@ -2306,14 +2543,22 @@ export default function FreshcoyApp() {
 
                 <div className="grid gap-3 md:grid-cols-3">
                   {whyCards.map(
-                    (card, index) => {
+                    (
+                      card,
+                      index,
+                    ) => {
                       const Icon =
                         card.icon;
 
                       return (
                         <FadeIn
-                          key={card.title}
-                          delay={index * 0.07}
+                          key={
+                            card.title
+                          }
+                          delay={
+                            index *
+                            0.07
+                          }
                         >
                           <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
                             <Icon
@@ -2322,11 +2567,15 @@ export default function FreshcoyApp() {
                             />
 
                             <h3 className="mt-8 font-black">
-                              {card.title}
+                              {
+                                card.title
+                              }
                             </h3>
 
                             <p className="mt-2 text-xs leading-6 text-[#66706a]">
-                              {card.text}
+                              {
+                                card.text
+                              }
                             </p>
                           </div>
                         </FadeIn>
@@ -2382,10 +2631,18 @@ export default function FreshcoyApp() {
 
                 <div className="grid gap-4 sm:grid-cols-3">
                   {foodWasteCards.map(
-                    (card, index) => (
+                    (
+                      card,
+                      index,
+                    ) => (
                       <FadeIn
-                        key={card.title}
-                        delay={index * 0.08}
+                        key={
+                          card.title
+                        }
+                        delay={
+                          index *
+                          0.08
+                        }
                       >
                         <div
                           className={`min-h-[190px] rounded-[26px] p-6 ${card.className}`}
@@ -2393,11 +2650,15 @@ export default function FreshcoyApp() {
                           <Recycle size={20} />
 
                           <h3 className="mt-12 font-black">
-                            {card.title}
+                            {
+                              card.title
+                            }
                           </h3>
 
                           <p className="mt-2 text-sm leading-6 text-[#5c665e]">
-                            {card.description}
+                            {
+                              card.description
+                            }
                           </p>
                         </div>
                       </FadeIn>
@@ -2427,9 +2688,11 @@ export default function FreshcoyApp() {
                   </div>
 
                   <div className="rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-xs leading-6 text-[#665a2f]">
-                    <strong>Perhatian:</strong> warna indikator tidak digunakan
-                    sebagai satu-satunya dasar untuk menentukan kelayakan
-                    konsumsi.
+                    <strong>
+                      Perhatian:
+                    </strong>{" "}
+                    warna indikator tidak digunakan sebagai satu-satunya dasar
+                    untuk menentukan kelayakan konsumsi.
                   </div>
                 </div>
 
@@ -2448,10 +2711,21 @@ export default function FreshcoyApp() {
                     </p>
 
                     <ul className="mt-4 space-y-2 text-sm text-[#4f5d53]">
-                      <li>• Salad pakcoy</li>
-                      <li>• Pakcoy kuah bening</li>
-                      <li>• Pakcoy with dressing lemon</li>
-                      <li>• Capcay</li>
+                      <li>
+                        • Salad pakcoy
+                      </li>
+
+                      <li>
+                        • Pakcoy kuah bening
+                      </li>
+
+                      <li>
+                        • Pakcoy with dressing lemon
+                      </li>
+
+                      <li>
+                        • Capcay
+                      </li>
                     </ul>
                   </div>
 
@@ -2469,9 +2743,17 @@ export default function FreshcoyApp() {
                     </p>
 
                     <ul className="mt-4 space-y-2 text-sm text-[#4f5d53]">
-                      <li>• Nasi goreng pakcoy</li>
-                      <li>• Sup pakcoy</li>
-                      <li>• Keripik pakcoy</li>
+                      <li>
+                        • Nasi goreng pakcoy
+                      </li>
+
+                      <li>
+                        • Sup pakcoy
+                      </li>
+
+                      <li>
+                        • Keripik pakcoy
+                      </li>
                     </ul>
                   </div>
 
@@ -2537,15 +2819,21 @@ export default function FreshcoyApp() {
                 <div className="rounded-[30px] border border-white/10 bg-white/[.06] p-6 sm:p-8">
                   <div className="grid gap-3 sm:grid-cols-4">
                     {interactiveStages.map(
-                      (item, index) => (
+                      (
+                        item,
+                        index,
+                      ) => (
                         <button
                           type="button"
                           key={item.id}
                           onClick={() =>
-                            updateStage(index)
+                            updateStage(
+                              index,
+                            )
                           }
                           className={`rounded-2xl border p-4 text-left transition ${
-                            index === stageIndex
+                            index ===
+                            stageIndex
                               ? "border-white bg-white/10"
                               : "border-white/10 bg-transparent"
                           }`}
@@ -2560,12 +2848,16 @@ export default function FreshcoyApp() {
                             />
 
                             <span className="text-xs font-bold">
-                              {item.label}
+                              {
+                                item.label
+                              }
                             </span>
                           </div>
 
                           <p className="mt-3 text-xs leading-5 text-[#bdcabe]">
-                            {item.title}
+                            {
+                              item.title
+                            }
                           </p>
                         </button>
                       ),
@@ -2618,16 +2910,26 @@ export default function FreshcoyApp() {
 
                 <div className="space-y-3">
                   {conclusions.map(
-                    (text, index) => (
+                    (
+                      text,
+                      index,
+                    ) => (
                       <FadeIn
                         key={text}
-                        delay={index * 0.06}
+                        delay={
+                          index *
+                          0.06
+                        }
                       >
                         <div className="flex gap-4 rounded-[22px] border border-[#dce5dc] bg-white p-6">
                           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#173a24] text-xs font-black text-white">
                             {String(
-                              index + 1,
-                            ).padStart(2, "0")}
+                              index +
+                                1,
+                            ).padStart(
+                              2,
+                              "0",
+                            )}
                           </div>
 
                           <p className="text-sm leading-7 text-[#536158]">
@@ -2649,18 +2951,26 @@ export default function FreshcoyApp() {
 
                 <div className="mt-5 grid gap-3 md:grid-cols-3">
                   {researchGoals.map(
-                    (goal) => (
+                    (
+                      goal,
+                    ) => (
                       <div
-                        key={goal.number}
+                        key={
+                          goal.number
+                        }
                         className="rounded-[22px] border border-[#dce5dc] bg-white p-6"
                       >
                         <div className="text-[10px] font-black tracking-[.14em] text-[#8a948d]">
                           TUJUAN{" "}
-                          {goal.number}
+                          {
+                            goal.number
+                          }
                         </div>
 
                         <p className="mt-4 text-sm leading-6 text-[#66706a]">
-                          {goal.text}
+                          {
+                            goal.text
+                          }
                         </p>
                       </div>
                     ),
@@ -2699,20 +3009,34 @@ export default function FreshcoyApp() {
 
                 <div className="grid gap-3">
                   {suggestions.map(
-                    (suggestion, index) => (
+                    (
+                      suggestion,
+                      index,
+                    ) => (
                       <FadeIn
-                        key={suggestion}
-                        delay={index * 0.06}
+                        key={
+                          suggestion
+                        }
+                        delay={
+                          index *
+                          0.06
+                        }
                       >
                         <div className="flex gap-4 rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
                           <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#cfd9d0] bg-white text-xs font-black text-[#526158]">
                             {String(
-                              index + 1,
-                            ).padStart(2, "0")}
+                              index +
+                                1,
+                            ).padStart(
+                              2,
+                              "0",
+                            )}
                           </div>
 
                           <p className="text-sm leading-7 text-[#59655c]">
-                            {suggestion}
+                            {
+                              suggestion
+                            }
                           </p>
                         </div>
                       </FadeIn>
@@ -2722,8 +3046,11 @@ export default function FreshcoyApp() {
               </div>
 
               <div className="mt-8 rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-xs leading-6 text-[#665a2f]">
-                <strong>Catatan:</strong> sesuaikan saran dengan keterbatasan
-                penelitian yang benar-benar dialami oleh tim.
+                <strong>
+                  Catatan:
+                </strong>{" "}
+                saran disusun berdasarkan bagian penelitian yang masih perlu
+                diperkuat atau dikembangkan lebih lanjut.
               </div>
             </FadeIn>
           </div>
@@ -2758,11 +3085,11 @@ export default function FreshcoyApp() {
                   {[
                     [
                       "Dikembangkan oleh",
-                      "[Nama Tim]",
+                      "Bhatatas Team",
                     ],
                     [
                       "Sekolah / Institusi",
-                      "[Nama Sekolah]",
+                      "SMAN 2 Taruna Bhayangkara Jawa Timur",
                     ],
                     [
                       "Tahun",
@@ -2770,10 +3097,15 @@ export default function FreshcoyApp() {
                     ],
                     [
                       "Bidang",
-                      "[Bidang Penelitian/Lomba]",
+                      "IPA",
                     ],
                   ].map(
-                    ([label, value]) => (
+                    (
+                      [
+                        label,
+                        value,
+                      ],
+                    ) => (
                       <div
                         key={label}
                         className="rounded-[22px] border border-white/10 bg-white/[.05] p-5"
@@ -2782,7 +3114,7 @@ export default function FreshcoyApp() {
                           {label}
                         </div>
 
-                        <div className="mt-3 text-sm font-bold text-[#eef3ed]">
+                        <div className="mt-3 text-sm font-bold leading-6 text-[#eef3ed]">
                           {value}
                         </div>
                       </div>
@@ -2795,33 +3127,45 @@ export default function FreshcoyApp() {
             <div className="mt-14 grid gap-10 border-t border-white/10 pt-10 lg:grid-cols-[.7fr_1.3fr]">
               <div>
                 <div className="text-[11px] font-black uppercase tracking-[.16em] text-[#8ea092]">
-                  Referensi
+                  Referensi ilmiah
                 </div>
 
                 <p className="mt-3 text-xs leading-6 text-[#9eaea1]">
-                  Tambahkan hanya sumber ilmiah yang benar-benar digunakan oleh
-                  tim.
+                  Referensi berikut berasal dari sumber ilmiah eksternal dan
+                  digunakan sebagai dasar pembahasan antosianin, indikator
+                  warna, serta smart packaging.
                 </p>
               </div>
 
-              <div className="grid gap-2 sm:grid-cols-2">
-                {[
-                  "[Referensi jurnal antosianin]",
-                  "[Referensi smart packaging]",
-                  "[Referensi food waste]",
-                  "[Referensi penyimpanan pakcoy]",
-                ].map(
+              <div className="grid gap-2">
+                {references.map(
                   (reference) => (
                     <div
-                      key={reference}
-                      className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-xs text-[#bdc8bf]"
+                      key={
+                        reference.title
+                      }
+                      className="rounded-xl border border-white/10 px-4 py-4"
                     >
-                      <BookOpen
-                        size={14}
-                        className="shrink-0"
-                      />
+                      <div className="flex items-start gap-3">
+                        <BookOpen
+                          size={14}
+                          className="mt-1 shrink-0"
+                        />
 
-                      <span>{reference}</span>
+                        <div>
+                          <div className="text-xs font-bold leading-5 text-[#eef3ed]">
+                            {
+                              reference.title
+                            }
+                          </div>
+
+                          <div className="mt-1 text-[11px] leading-5 text-[#9eaea1]">
+                            {
+                              reference.source
+                            }
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   ),
                 )}
@@ -2839,7 +3183,11 @@ export default function FreshcoyApp() {
             </div>
 
             <p className="mt-1 text-xs text-[#727c74]">
-              Monitor. Check. Keep Fresh.
+  Monitor. Check. Keep Fresh.
+</p>
+
+            <p className="mt-2 text-[11px] text-[#8a948d]">
+              © 2026 itsravienx. All rights reserved.
             </p>
           </div>
 
