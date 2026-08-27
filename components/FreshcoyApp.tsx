@@ -14,7 +14,6 @@ import {
   FlaskConical,
   Leaf,
   Menu,
-  QrCode,
   Recycle,
   ScanLine,
   ShieldCheck,
@@ -65,13 +64,6 @@ type TimelineItem = {
   color: string;
 };
 
-type ObservationRow = {
-  day: string;
-  color: string;
-  condition: string;
-  note: string;
-};
-
 type InfoCard = {
   title: string;
   text: string;
@@ -96,6 +88,17 @@ type FoodWasteCard = {
   className: string;
 };
 
+type TreatmentStep = {
+  number: string;
+  title: string;
+  description: string;
+};
+
+type ResearchGoal = {
+  number: string;
+  text: string;
+};
+
 /* -------------------------------------------------------------------------- */
 /* DATA                                                                       */
 /* -------------------------------------------------------------------------- */
@@ -105,7 +108,11 @@ const navigationLinks: NavigationLink[] = [
   { href: "#cara-kerja", label: "Cara kerja" },
   { href: "#kimia", label: "Kimia" },
   { href: "#panduan", label: "Panduan" },
+  { href: "#perlakuan", label: "Perlakuan" },
+  { href: "#perubahan", label: "Perubahan" },
   { href: "#penelitian", label: "Penelitian" },
+  { href: "#pengamatan", label: "Pengamatan" },
+  { href: "#kesimpulan", label: "Kesimpulan" },
   { href: "#food-waste", label: "Food waste" },
 ];
 
@@ -113,32 +120,69 @@ const processSteps: ProcessStep[] = [
   {
     number: "01",
     title: "Pakcoy",
-    text: "Ditempatkan dalam kemasan Freshcoy.",
+    text:
+      "Pakcoy ditempatkan dalam kemasan Freshcoy untuk diamati selama penyimpanan.",
     icon: Leaf,
   },
   {
     number: "02",
     title: "Penyimpanan",
-    text: "Terjadi perubahan kondisi selama penyimpanan.",
+    text:
+      "Pakcoy mengalami perubahan fisiologis dan kimiawi selama proses penyimpanan.",
     icon: ArrowDown,
   },
   {
     number: "03",
     title: "Indikator",
-    text: "Antosianin memberi respons perubahan warna.",
+    text:
+      "Antosianin digunakan sebagai indikator alami yang dapat menunjukkan perubahan warna.",
     icon: FlaskConical,
   },
   {
     number: "04",
     title: "Pengamatan",
-    text: "Pengguna melihat warna dan kondisi fisik.",
+    text:
+      "Warna indikator diamati bersama kondisi fisik pakcoy seperti daun, batang, dan tekstur.",
     icon: ScanLine,
+  },
+];
+
+const treatmentSteps: TreatmentStep[] = [
+  {
+    number: "01",
+    title: "Persiapan pakcoy",
+    description:
+      "Pakcoy dipersiapkan dalam kondisi awal yang ditentukan oleh penelitian sebelum dimasukkan ke dalam sistem kemasan.",
+  },
+  {
+    number: "02",
+    title: "Pemasangan indikator",
+    description:
+      "Indikator berbasis antosianin ditempatkan pada bagian kemasan yang telah ditentukan agar perubahan warna dapat diamati.",
+  },
+  {
+    number: "03",
+    title: "Penyimpanan",
+    description:
+      "Pakcoy disimpan selama periode pengamatan sesuai perlakuan penelitian yang digunakan oleh tim.",
+  },
+  {
+    number: "04",
+    title: "Pengamatan kondisi sayur",
+    description:
+      "Kondisi daun, warna, tekstur, batang, dan perubahan fisik lainnya diamati secara berkala.",
   },
   {
     number: "05",
-    title: "QR Code",
-    text: "Informasi Freshcoy dapat dibuka dari kemasan.",
-    icon: QrCode,
+    title: "Pengamatan indikator",
+    description:
+      "Perubahan warna indikator diamati dan dibandingkan dengan kondisi fisik pakcoy pada waktu pengamatan yang sama.",
+  },
+  {
+    number: "06",
+    title: "Pencatatan data",
+    description:
+      "Hasil perubahan warna indikator dan kondisi pakcoy dicatat untuk dibandingkan selama periode penelitian.",
   },
 ];
 
@@ -166,12 +210,14 @@ const researchSteps = [
   {
     number: "05",
     title: "Pengamatan",
-    text: "Perubahan warna indikator dan kondisi fisik pakcoy diamati.",
+    text:
+      "Perubahan warna indikator dan kondisi fisik pakcoy diamati.",
   },
   {
     number: "06",
     title: "Analisis",
-    text: "Hasil pengamatan dibandingkan untuk memahami potensi indikator sebagai alat bantu pemantauan.",
+    text:
+      "Hasil pengamatan dibandingkan untuk memahami potensi indikator sebagai alat bantu pemantauan.",
   },
 ];
 
@@ -207,13 +253,14 @@ const storageSteps: StorageStep[] = [
   {
     number: "02",
     title: "Gunakan kemasan bersih",
-    description: "Simpan pakcoy dalam kemasan yang bersih.",
+    description:
+      "Simpan pakcoy dalam kemasan yang bersih.",
   },
   {
     number: "03",
     title: "Hindari pemicu kerusakan",
     description:
-      "Hindari kondisi yang membuat pakcoy cepat layu atau rusak.",
+      "Hindari kondisi yang dapat mempercepat pelayuan atau kerusakan.",
   },
   {
     number: "04",
@@ -223,37 +270,45 @@ const storageSteps: StorageStep[] = [
   },
 ];
 
-const observationRows: ObservationRow[] = [
-  {
-    day: "Hari 0",
-    color: "[DATA]",
-    condition: "[DATA]",
-    note: "[DATA]",
-  },
+const observationRows = [
   {
     day: "Hari 1",
-    color: "[DATA]",
-    condition: "[DATA]",
-    note: "[DATA]",
+    color: "[UNGU]",
+    condition: "[Masih terlihat segar]",
+    note:
+      "[Pakcoy yang baru di packing merupakan pakcoy yang masih segar]",
   },
   {
     day: "Hari 2",
-    color: "[DATA]",
-    condition: "[DATA]",
-    note: "[DATA]",
+    color: "[UNGU]",
+    condition:
+      "[Pakcoy masih cukup segar, tetapi mulai ada sedikit perubahan pada daun]",
+    note:
+      "[Indikator belum menunjukkan perubahan warna yang jelas]",
   },
   {
     day: "Hari 3",
-    color: "[DATA]",
-    condition: "[DATA]",
-    note: "[DATA]",
+    color: "[UNGU]",
+    condition:
+      "[Daun mulai mengalami perubahan warna dan terlihat lebih layu]",
+    note:
+      "[Indikator belum berubah. Hal ini kemungkinan karena kertas saring dipasang terlalu cepat setelah direndam dalam ekstrak kol ungu, sehingga ekstrak belum meresap dengan maksimal]",
+  },
+  {
+    day: "Hari 4",
+    color: "[KUNING]",
+    condition:
+      "[Daun pakcoy semakin layu dan perubahan warna semakin terlihat]",
+    note:
+      "[Indikator berubah dari ungu menjadi kuning saat kondisi pakcoy semakin menurun]",
   },
 ];
 
 const foodWasteCards: FoodWasteCard[] = [
   {
     title: "Masih baik",
-    description: "Simpan dan gunakan sesuai kebutuhan.",
+    description:
+      "Simpan dan gunakan sesuai kebutuhan.",
     className: "bg-[#e9f3e8]",
   },
   {
@@ -264,7 +319,8 @@ const foodWasteCards: FoodWasteCard[] = [
   },
   {
     title: "Tidak dapat digunakan",
-    description: "Pisahkan dan tangani sebagai limbah.",
+    description:
+      "Pisahkan dan tangani sebagai limbah.",
     className: "bg-[#eef0ed]",
   },
 ];
@@ -272,63 +328,186 @@ const foodWasteCards: FoodWasteCard[] = [
 const projectComponents: ProjectComponent[] = [
   {
     title: "Pakcoy",
-    text: "Produk yang dipantau selama penyimpanan.",
+    text:
+      "Produk yang dipantau selama penyimpanan.",
     icon: Sprout,
   },
   {
     title: "Antosianin kol ungu",
-    text: "Bahan alami yang digunakan sebagai indikator.",
+    text:
+      "Bahan alami yang digunakan sebagai indikator perubahan.",
     icon: FlaskConical,
   },
   {
     title: "Kemasan",
-    text: "Media penyimpanan pakcoy dan tempat integrasi indikator.",
+    text:
+      "Media penyimpanan pakcoy dan tempat integrasi indikator.",
     icon: Beaker,
   },
   {
-    title: "QR Code",
-    text: "Media informasi digital untuk memahami indikator dan cara penggunaan Freshcoy.",
-    icon: QrCode,
+    title: "Sistem pengamatan",
+    text:
+      "Menggabungkan pengamatan indikator dan kondisi fisik pakcoy.",
+    icon: ClipboardList,
   },
 ];
 
 const whyCards: WhyCard[] = [
   {
     title: "Untuk konsumen",
-    text: "Membantu memahami perubahan kondisi pakcoy.",
+    text:
+      "Membantu memahami perubahan kondisi pakcoy melalui indikator dan pengamatan fisik.",
     icon: Sprout,
   },
   {
     title: "Untuk edukasi",
-    text: "Memperkenalkan pemanfaatan bahan alami dalam konsep smart packaging.",
+    text:
+      "Memperkenalkan pemanfaatan bahan alami dalam konsep smart packaging.",
     icon: BookOpen,
   },
   {
     title: "Untuk lingkungan",
-    text: "Mendorong penggunaan pangan secara lebih bijak dan meningkatkan kesadaran terhadap food waste.",
+    text:
+      "Mendorong penggunaan pangan secara lebih bijak dan meningkatkan kesadaran terhadap food waste.",
     icon: Recycle,
   },
 ];
 
 const timelineItems: TimelineItem[] = [
   {
-    time: "Hari 0",
+    time: "Hari 1",
     title: "Kondisi awal",
-    text: "Indikator berada pada warna awal. Pakcoy berada pada kondisi awal penyimpanan.",
+    text:
+      "Pakcoy masih terlihat segar dan indikator masih berada pada warna awal.",
     color: "#6c43a4",
   },
   {
-    time: "Selama penyimpanan",
+    time: "Hari 2",
     title: "Mulai berubah",
-    text: "Indikator mengalami perubahan yang perlu diperhatikan bersama kondisi fisik pakcoy.",
-    color: "#4e77b4",
+    text:
+      "Pakcoy masih cukup segar, tetapi mulai terlihat sedikit perubahan pada daun sementara indikator belum menunjukkan perubahan yang jelas.",
+    color: "#6c43a4",
   },
   {
-    time: "Perubahan lebih lanjut",
-    title: "Perubahan lebih jelas",
-    text: "Kondisi pakcoy perlu diperiksa dengan lebih teliti sebelum menentukan tindakan.",
-    color: "#5b9b55",
+    time: "Hari 3",
+    title: "Perubahan fisik terlihat",
+    text:
+      "Daun mulai berubah warna dan terlihat lebih layu, tetapi indikator belum berubah secara jelas.",
+    color: "#6c43a4",
   },
+  {
+    time: "Hari 4",
+    title: "Indikator berubah",
+    text:
+      "Daun semakin layu dan indikator berubah dari ungu menjadi kuning ketika kondisi pakcoy semakin menurun.",
+    color: "#c1a044",
+  },
+];
+
+/*
+ * INTERACTIVE INDICATOR
+ *
+ * Ungu  = masih bagus
+ * Hijau  = kurang segar
+ * Kuning = tidak segar tetapi masih bisa dikonsumsi
+ * Pink   = busuk
+ */
+const interactiveIndicatorColors = [
+  "#6c43a4",
+  "#5b9b55",
+  "#c1a044",
+  "#dc6b8a",
+];
+
+/*
+ * DATA INTERACTIVE INDICATOR
+ *
+ * Dibuat terpisah dari `stages` agar warna dan keterangannya
+ * selalu mengikuti urutan yang benar.
+ */
+const interactiveStages: FreshnessStage[] = [
+  {
+    ...stages[0],
+    id: "interactive-purple",
+    label: "Ungu",
+    title: "Masih bagus",
+    description:
+      "Pakcoy masih terlihat segar, warna daun masih normal, dan belum menunjukkan perubahan yang berarti.",
+    action:
+      "Pakcoy dapat disimpan dan digunakan sesuai kebutuhan.",
+    color: interactiveIndicatorColors[0],
+  },
+  {
+    ...stages[1],
+    id: "interactive-green",
+    label: "Hijau",
+    title: "Kurang segar",
+    description:
+      "Pakcoy mulai mengalami penurunan kesegaran, seperti daun mulai layu atau mengalami perubahan fisik ringan.",
+    action:
+      "Periksa kondisi pakcoy dan prioritaskan untuk segera diolah jika masih layak.",
+    color: interactiveIndicatorColors[1],
+  },
+  {
+    ...stages[2],
+    id: "interactive-yellow",
+    label: "Kuning",
+    title: "Tidak segar tetapi masih bisa dikonsumsi",
+    description:
+      "Pakcoy menunjukkan penurunan kualitas yang lebih terlihat. Kondisi fisiknya perlu diperiksa sebelum digunakan.",
+    action:
+      "Periksa kondisi fisik pakcoy dengan teliti dan segera olah jika masih layak.",
+    color: interactiveIndicatorColors[2],
+  },
+  {
+    ...stages[3],
+    id: "interactive-pink",
+    label: "Pink",
+    title: "Busuk",
+    description:
+      "Pakcoy menunjukkan perubahan yang signifikan dan kondisi fisiknya sudah tidak baik.",
+    action:
+      "Jangan digunakan dan pisahkan dari bahan makanan lain.",
+    color: interactiveIndicatorColors[3],
+  },
+];
+
+const observationIndicatorColors = [
+  "#6c43a4",
+  "#6c43a4",
+  "#6c43a4",
+  "#c1a044",
+];
+
+const researchGoals: ResearchGoal[] = [
+  {
+    number: "01",
+    text:
+      "Mengembangkan indikator alami berbasis antosianin untuk membantu memantau perubahan kondisi pakcoy.",
+  },
+  {
+    number: "02",
+    text:
+      "Mengintegrasikan indikator alami ke dalam konsep smart packaging Freshcoy.",
+  },
+  {
+    number: "03",
+    text:
+      "Mengamati hubungan perubahan warna indikator dengan perubahan kondisi pakcoy selama penyimpanan.",
+  },
+];
+
+const conclusions = [
+  "Indikator berbasis antosianin berpotensi digunakan sebagai alat bantu untuk memantau perubahan kondisi pakcoy.",
+  "Freshcoy mengintegrasikan indikator alami dengan kemasan sehingga perubahan dapat diamati secara lebih sederhana.",
+  "Perubahan warna indikator perlu diamati bersama perubahan fisik dan kondisi penyimpanan pakcoy.",
+];
+
+const suggestions = [
+  "Jumlah sampel dan pengulangan penelitian dapat diperbanyak agar hasil yang diperoleh lebih kuat.",
+  "Pengujian dapat dilakukan pada beberapa kondisi suhu dan kelembapan yang lebih terkontrol.",
+  "Hubungan antara perubahan warna indikator dan kualitas pakcoy belum dikalibrasi secara kuantitatif sehingga perlu dilakukan pengujian lanjutan.",
+  "Stabilitas indikator selama penyimpanan dan ketahanan indikator pada berbagai kondisi kemasan masih perlu diuji lebih lanjut.",
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -372,13 +551,16 @@ function Nav() {
           className="flex items-center gap-3 font-bold tracking-tight"
         >
           <span className="grid h-9 w-9 place-items-center rounded-xl border border-[#cfd9d0] bg-white">
-            <Leaf size={17} strokeWidth={2.4} />
+            <Leaf
+              size={17}
+              strokeWidth={2.4}
+            />
           </span>
 
           <span>FRESHCOY</span>
         </a>
 
-        <nav className="hidden items-center gap-7 md:flex">
+        <nav className="hidden items-center gap-6 md:flex">
           {navigationLinks.map((link) => (
             <a
               key={link.href}
@@ -399,12 +581,18 @@ function Nav() {
 
         <button
           type="button"
-          aria-label={open ? "Tutup menu" : "Buka menu"}
+          aria-label={
+            open ? "Tutup menu" : "Buka menu"
+          }
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
           className="grid h-10 w-10 place-items-center rounded-full border border-[var(--line)] bg-white md:hidden"
         >
-          {open ? <X size={18} /> : <Menu size={18} />}
+          {open ? (
+            <X size={18} />
+          ) : (
+            <Menu size={18} />
+          )}
         </button>
       </div>
 
@@ -443,7 +631,11 @@ function Nav() {
   );
 }
 
-function PackMock({ stage }: { stage: FreshnessStage }) {
+function PackMock({
+  stage,
+}: {
+  stage: FreshnessStage;
+}) {
   return (
     <motion.div
       className="relative mx-auto aspect-[0.86] w-full max-w-[390px] overflow-hidden rounded-[34px] border border-white/70 bg-white/70 p-6 shadow-[0_30px_80px_rgba(31,58,39,.15)] backdrop-blur"
@@ -465,8 +657,11 @@ function PackMock({ stage }: { stage: FreshnessStage }) {
       <div className="absolute right-5 top-5 flex items-center gap-2 rounded-full border border-[#d7ded7] bg-[#fafbf8] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.13em] text-[#4c5c50]">
         <span
           className="h-2 w-2 rounded-full"
-          style={{ background: stage.color }}
+          style={{
+            background: stage.color,
+          }}
         />
+
         live demo
       </div>
 
@@ -495,28 +690,31 @@ function PackMock({ stage }: { stage: FreshnessStage }) {
             <div className="absolute left-1/2 top-1/2 h-[190px] w-[250px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-[#86b78f]/20 blur-2xl" />
 
             <div className="relative flex items-end gap-1.5">
-              {[0, 1, 2, 3, 4].map((leafIndex) => {
-                const rotation = (leafIndex - 2) * 8;
+              {[0, 1, 2, 3, 4].map(
+                (leafIndex) => {
+                  const rotation =
+                    (leafIndex - 2) * 8;
 
-                return (
-                  <div
-                    key={leafIndex}
-                    className="h-[118px] w-8 rounded-[60%_60%_45%_45%] bg-gradient-to-b from-[#8cbf83] to-[#3f7c46]"
-                    style={{
-                      transform: `rotate(${rotation}deg)`,
-                    }}
-                  >
-                    <div className="mx-auto mt-3 h-20 w-[2px] bg-[#d6e7cf]/70" />
-                  </div>
-                );
-              })}
+                  return (
+                    <div
+                      key={leafIndex}
+                      className="h-[118px] w-8 rounded-[60%_60%_45%_45%] bg-gradient-to-b from-[#8cbf83] to-[#3f7c46]"
+                      style={{
+                        transform: `rotate(${rotation}deg)`,
+                      }}
+                    >
+                      <div className="mx-auto mt-3 h-20 w-[2px] bg-[#d6e7cf]/70" />
+                    </div>
+                  );
+                },
+              )}
 
               <div className="absolute bottom-0 left-1/2 h-24 w-3 -translate-x-1/2 rounded-full bg-[#e8c7a7]" />
             </div>
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-[1fr_auto] gap-4">
+        <div className="grid grid-cols-1 gap-4">
           <div className="rounded-2xl border border-[#d9e2da] bg-white/80 p-4">
             <div className="text-[10px] uppercase tracking-[.12em] text-[#66706a]">
               Indicator
@@ -530,27 +728,19 @@ function PackMock({ stage }: { stage: FreshnessStage }) {
                 transition={{
                   duration: 0.5,
                 }}
-                className="h-7 w-7 rounded-full border-4 border-white shadow"
+                className="h-7 w-7 shrink-0 rounded-full border-4 border-white shadow"
               />
 
-              <div>
-                <div className="text-sm font-bold">
+              <div className="min-w-0">
+                <div className="break-words text-sm font-bold">
                   {stage.label}
                 </div>
 
-                <div className="text-xs text-[#66706a]">
+                <div className="break-words text-xs text-[#66706a]">
                   {stage.title}
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="grid w-24 place-items-center rounded-2xl border border-[#d9e2da] bg-white/80">
-            <QrCode size={34} strokeWidth={1.5} />
-
-            <span className="text-[9px] font-bold uppercase tracking-[.1em] text-[#66706a]">
-              Scan
-            </span>
           </div>
         </div>
       </div>
@@ -574,7 +764,9 @@ function MiniStep({
           {number}
         </span>
 
-        <h3 className="text-sm font-black">{title}</h3>
+        <h3 className="text-sm font-black">
+          {title}
+        </h3>
       </div>
 
       <p className="mt-3 text-xs leading-5 text-[#66706a]">
@@ -589,37 +781,46 @@ function MiniStep({
 /* -------------------------------------------------------------------------- */
 
 export default function FreshcoyApp() {
-  const [stageIndex, setStageIndex] = useState<number>(0);
-  const [chem, setChem] = useState<number>(0);
-  const [qrOpen, setQrOpen] = useState<boolean>(false);
+  const [stageIndex, setStageIndex] =
+    useState<number>(0);
 
-  const stage = stages[stageIndex] ?? stages[0];
+  const [chem, setChem] =
+    useState<number>(0);
 
-  const chemistry: ChemistryItem[] = useMemo(
-    () => [
-      {
-        name: "Flavylium",
-        tone: "Merah–ungu",
-        text: "Bentuk kation yang dominan pada kondisi sangat asam. Struktur ini berkontribusi kuat pada warna merah atau ungu antosianin.",
-      },
-      {
-        name: "Quinoidal",
-        tone: "Biru–ungu",
-        text: "Ketika kondisi berubah, terjadi perpindahan proton dan bentuk quinoidal dapat muncul. Warna dapat bergeser ke arah biru atau ungu.",
-      },
-      {
-        name: "Carbinol pseudobase",
-        tone: "Sangat pucat",
-        text: "Hidrasi pada posisi tertentu membentuk pseudobase yang cenderung kurang berwarna dibanding bentuk kation.",
-      },
-      {
-        name: "Chalcone",
-        tone: "Kuning–pucat",
-        text: "Kesetimbangan lanjutan dapat menuju bentuk chalcone. Tampilan warna bergantung pada struktur, pH, dan kondisi sistem.",
-      },
-    ],
-    [],
-  );
+  const stage =
+    interactiveStages[stageIndex] ??
+    interactiveStages[0];
+
+  const chemistry: ChemistryItem[] =
+    useMemo(
+      () => [
+        {
+          name: "Flavylium",
+          tone: "Merah–ungu",
+          text:
+            "Bentuk kation yang dominan pada kondisi asam dan menjadi salah satu bentuk struktur yang berkontribusi terhadap warna merah atau ungu antosianin.",
+        },
+        {
+          name: "Quinoidal",
+          tone: "Biru–ungu",
+          text:
+            "Perubahan kondisi dapat menyebabkan perpindahan proton dan perubahan kesetimbangan struktur. Bentuk quinoidal dapat muncul dan menyebabkan perubahan warna ke arah biru atau ungu.",
+        },
+        {
+          name: "Carbinol pseudobase",
+          tone: "Sangat pucat",
+          text:
+            "Hidrasi pada struktur antosianin dapat menghasilkan bentuk pseudobase yang memiliki warna lebih lemah dibandingkan bentuk berwarna sebelumnya.",
+        },
+        {
+          name: "Chalcone",
+          tone: "Kuning–pucat",
+          text:
+            "Kesetimbangan lanjutan dapat menuju bentuk chalcone. Warna yang terlihat dipengaruhi struktur molekul dan kondisi lingkungan.",
+        },
+      ],
+      [],
+    );
 
   const chemistryColors: string[] = [
     "#6c43a4",
@@ -631,7 +832,10 @@ export default function FreshcoyApp() {
   const updateStage = (index: number) => {
     const safeIndex = Math.max(
       0,
-      Math.min(index, stages.length - 1),
+      Math.min(
+        index,
+        interactiveStages.length - 1,
+      ),
     );
 
     setStageIndex(safeIndex);
@@ -639,31 +843,41 @@ export default function FreshcoyApp() {
 
   const next = async () => {
     try {
-      const response = await fetch("/api/freshness", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "/api/freshness",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+          body: JSON.stringify({
+            stage: stageIndex,
+          }),
         },
-        body: JSON.stringify({
-          stage: stageIndex,
-        }),
-      });
+      );
 
       if (response.ok) {
-        const payload: unknown = await response.json();
+        const payload: unknown =
+          await response.json();
 
         if (
           typeof payload === "object" &&
           payload !== null &&
           "stage" in payload
         ) {
-          const serverStage = (payload as { stage?: unknown }).stage;
+          const serverStage = (
+            payload as {
+              stage?: unknown;
+            }
+          ).stage;
 
           if (
             typeof serverStage === "number" &&
             Number.isInteger(serverStage) &&
             serverStage >= 0 &&
-            serverStage < stages.length
+            serverStage <
+              interactiveStages.length
           ) {
             setStageIndex(serverStage);
             return;
@@ -671,17 +885,21 @@ export default function FreshcoyApp() {
         }
       }
     } catch {
-      // Fallback lokal agar demo tetap berjalan
-      // jika API belum tersedia.
+      // Fallback lokal.
     }
 
     setStageIndex(
-      (current) => (current + 1) % stages.length,
+      (current) =>
+        (current + 1) %
+        interactiveStages.length,
     );
   };
 
   return (
-    <div id="top" className="min-h-screen overflow-x-hidden">
+    <div
+      id="top"
+      className="min-h-screen overflow-x-hidden"
+    >
       <Nav />
 
       <main>
@@ -720,19 +938,19 @@ export default function FreshcoyApp() {
                     className="rounded-full bg-[#173a24] px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5"
                   >
                     Coba indikator
+
                     <ArrowRight
                       className="ml-2 inline"
                       size={16}
                     />
                   </a>
 
-                  <button
-                    type="button"
-                    onClick={() => setQrOpen(true)}
+                  <a
+                    href="#penelitian"
                     className="rounded-full border border-[#cad4cc] bg-white px-5 py-3.5 text-sm font-semibold text-[#27432f] transition hover:-translate-y-0.5"
                   >
-                    Simulasikan QR
-                  </button>
+                    Lihat penelitian
+                  </a>
                 </div>
 
                 <div className="mt-10 flex flex-wrap gap-5 text-xs text-[#5f6b62]">
@@ -740,30 +958,48 @@ export default function FreshcoyApp() {
                     <span
                       className="h-2 w-2 rounded-full"
                       style={{
-                        background: stages[0].color,
+                        background:
+                          interactiveIndicatorColors[0],
                       }}
                     />
-                    indikator alami
+
+                    masih bagus
                   </span>
 
                   <span className="inline-flex items-center gap-2">
                     <span
                       className="h-2 w-2 rounded-full"
                       style={{
-                        background: stages[1].color,
+                        background:
+                          interactiveIndicatorColors[1],
                       }}
                     />
-                    pemantauan perubahan
+
+                    kurang segar
                   </span>
 
                   <span className="inline-flex items-center gap-2">
                     <span
                       className="h-2 w-2 rounded-full"
                       style={{
-                        background: stages[2].color,
+                        background:
+                          interactiveIndicatorColors[2],
                       }}
                     />
-                    food waste awareness
+
+                    tidak segar
+                  </span>
+
+                  <span className="inline-flex items-center gap-2">
+                    <span
+                      className="h-2 w-2 rounded-full"
+                      style={{
+                        background:
+                          interactiveIndicatorColors[3],
+                      }}
+                    />
+
+                    busuk
                   </span>
                 </div>
               </div>
@@ -806,6 +1042,7 @@ export default function FreshcoyApp() {
                     className="rounded-full bg-[#173a24] px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5"
                   >
                     Next stage
+
                     <ArrowRight
                       className="ml-2 inline"
                       size={16}
@@ -813,7 +1050,8 @@ export default function FreshcoyApp() {
                   </button>
 
                   <div className="text-xs font-semibold text-[#69746d]">
-                    {stageIndex + 1} / {stages.length}
+                    {stageIndex + 1} /{" "}
+                    {interactiveStages.length}
                   </div>
                 </div>
               </div>
@@ -846,7 +1084,8 @@ export default function FreshcoyApp() {
                     <div
                       className="absolute h-64 w-64 rounded-full blur-3xl"
                       style={{
-                        background: stage.color,
+                        background:
+                          stage.color,
                         opacity: 0.14,
                       }}
                     />
@@ -854,7 +1093,8 @@ export default function FreshcoyApp() {
                     <div
                       className="relative h-40 w-40 rounded-full border-[18px] border-white shadow-[0_18px_60px_rgba(20,40,28,.16)]"
                       style={{
-                        background: stage.color,
+                        background:
+                          stage.color,
                       }}
                     />
 
@@ -870,14 +1110,15 @@ export default function FreshcoyApp() {
                       className="absolute h-56 w-56 rounded-full border border-dashed border-[#c3cbc4]"
                     />
 
-                    <div className="absolute -bottom-12 rounded-full border border-[#d3dbd3] bg-white px-4 py-2 text-xs font-bold shadow-sm">
-                      {stage.label} • {stage.title}
+                    <div className="absolute -bottom-12 whitespace-nowrap rounded-full border border-[#d3dbd3] bg-white px-4 py-2 text-xs font-bold shadow-sm">
+                      {stage.label} •{" "}
+                      {stage.title}
                     </div>
                   </motion.div>
                 </div>
 
-                <div className="flex flex-col justify-between border-t border-[#dde5dd] bg-white p-8 lg:border-l lg:border-t-0 lg:p-12">
-                  <div>
+                <div className="min-w-0 overflow-hidden border-t border-[#dde5dd] bg-white p-7 sm:p-9 lg:flex lg:min-h-[500px] lg:flex-col lg:justify-between lg:border-l lg:border-t-0 lg:p-12">
+                  <div className="min-w-0">
                     <div className="text-xs font-black uppercase tracking-[.15em] text-[#68736b]">
                       Status saat ini
                     </div>
@@ -900,21 +1141,36 @@ export default function FreshcoyApp() {
                         transition={{
                           duration: 0.35,
                         }}
+                        className="min-w-0"
                       >
-                        <h3 className="mt-4 text-3xl font-black tracking-tight">
-                          {stage.title}
-                        </h3>
+                        <div className="mt-4 flex flex-wrap items-center gap-3">
+                          <span
+                            className="h-4 w-4 shrink-0 rounded-full"
+                            style={{
+                              background:
+                                stage.color,
+                            }}
+                          />
 
-                        <p className="body-copy mt-4 max-w-xl text-base">
+                          <h3 className="break-words text-2xl font-black tracking-tight sm:text-3xl">
+                            {stage.title}
+                          </h3>
+                        </div>
+
+                        <div className="mt-3 text-xs font-bold uppercase tracking-[.12em] text-[#7a857d]">
+                          Indikator {stage.label}
+                        </div>
+
+                        <p className="body-copy mt-4 max-w-xl break-words text-sm leading-6 sm:text-base">
                           {stage.description}
                         </p>
 
-                        <div className="mt-8 rounded-2xl border border-[#e0e6e0] bg-[#f8faf7] p-5">
+                        <div className="mt-8 rounded-2xl border border-[#e0e6e0] bg-[#f8faf7] p-5 sm:p-6">
                           <div className="text-[11px] font-black uppercase tracking-[.12em] text-[#637067]">
                             Yang sebaiknya dilakukan
                           </div>
 
-                          <p className="mt-2 text-sm leading-6 text-[#38483e]">
+                          <p className="mt-2 break-words text-sm leading-6 text-[#38483e]">
                             {stage.action}
                           </p>
                         </div>
@@ -922,26 +1178,75 @@ export default function FreshcoyApp() {
                     </AnimatePresence>
                   </div>
 
-                  <div className="mt-9 flex flex-wrap gap-2">
-                    {stages.map((item, index) => (
-                      <button
-                        type="button"
-                        key={item.id}
-                        aria-label={`Pilih ${item.label}`}
-                        onClick={() => updateStage(index)}
-                        className={`h-10 rounded-full border px-4 text-xs font-bold transition ${
-                          index === stageIndex
-                            ? "border-[#173a24] bg-[#173a24] text-white"
-                            : "border-[#d7e0d7] bg-white text-[#58645b] hover:border-[#aab8ad]"
-                        }`}
-                      >
-                        {item.label}
-                      </button>
-                    ))}
+                  <div className="mt-9 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+                    {interactiveStages.map(
+                      (item, index) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          aria-label={`Pilih ${item.label}`}
+                          onClick={() =>
+                            updateStage(index)
+                          }
+                          className={`min-h-10 rounded-full border px-3 py-2 text-xs font-bold transition sm:px-4 ${
+                            index === stageIndex
+                              ? "border-[#173a24] bg-[#173a24] text-white"
+                              : "border-[#d7e0d7] bg-white text-[#58645b] hover:border-[#aab8ad]"
+                          }`}
+                        >
+                          <span className="inline-flex items-center gap-2">
+                            <span
+                              className="h-2.5 w-2.5 shrink-0 rounded-full"
+                              style={{
+                                background:
+                                  item.color,
+                              }}
+                            />
+
+                            {item.label}
+                          </span>
+                        </button>
+                      ),
+                    )}
                   </div>
                 </div>
               </div>
             </div>
+
+            <FadeIn delay={0.08}>
+              <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {interactiveStages.map(
+                  (item, index) => (
+                    <button
+                      type="button"
+                      key={item.id}
+                      onClick={() =>
+                        updateStage(index)
+                      }
+                      className="rounded-2xl border border-[#dde5dd] bg-[#f7f8f3] p-5 text-left transition hover:-translate-y-0.5 hover:shadow-sm"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span
+                          className="h-3 w-3 shrink-0 rounded-full"
+                          style={{
+                            background:
+                              item.color,
+                          }}
+                        />
+
+                        <span className="text-xs font-black">
+                          {item.label}
+                        </span>
+                      </div>
+
+                      <p className="mt-3 text-xs leading-5 text-[#66706a]">
+                        {item.title}
+                      </p>
+                    </button>
+                  ),
+                )}
+              </div>
+            </FadeIn>
           </div>
         </section>
 
@@ -957,51 +1262,55 @@ export default function FreshcoyApp() {
             <FadeIn>
               <div className="grid gap-12 lg:grid-cols-[.8fr_1.2fr]">
                 <div>
-                  <div className="eyebrow">Cara kerja</div>
+                  <div className="eyebrow">
+                    Cara kerja
+                  </div>
 
                   <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
-                    Satu alur dari kemasan sampai informasi.
+                    Satu alur dari kemasan sampai pengamatan.
                   </h2>
 
                   <p className="body-copy mt-5 max-w-md">
                     Freshcoy menggabungkan kemasan, indikator alami,
-                    pengamatan fisik, dan QR Code tanpa membuat pengguna harus
-                    mempelajari sistem yang rumit.
+                    pengamatan fisik, dan pencatatan perubahan tanpa membuat
+                    pengguna harus mempelajari sistem yang rumit.
                   </p>
                 </div>
 
                 <div className="relative border-l border-[#cbd5cc] pl-7">
-                  {processSteps.map((step, index) => {
-                    const Icon = step.icon;
+                  {processSteps.map(
+                    (step, index) => {
+                      const Icon = step.icon;
 
-                    return (
-                      <FadeIn
-                        key={step.number}
-                        delay={index * 0.08}
-                        className="relative pb-12 last:pb-0"
-                      >
-                        <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#eef2ea] text-[10px] font-black text-[#526158]">
-                          {step.number}
-                        </span>
+                      return (
+                        <FadeIn
+                          key={step.number}
+                          delay={index * 0.08}
+                          className="relative pb-12 last:pb-0"
+                        >
+                          <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#eef2ea] text-[10px] font-black text-[#526158]">
+                            {step.number}
+                          </span>
 
-                        <div className="flex gap-4">
-                          <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-[#275738] shadow-sm">
-                            <Icon size={18} />
+                          <div className="flex gap-4">
+                            <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white text-[#275738] shadow-sm">
+                              <Icon size={18} />
+                            </div>
+
+                            <div>
+                              <h3 className="font-bold">
+                                {step.title}
+                              </h3>
+
+                              <p className="body-copy mt-1 text-sm">
+                                {step.text}
+                              </p>
+                            </div>
                           </div>
-
-                          <div>
-                            <h3 className="font-bold">
-                              {step.title}
-                            </h3>
-
-                            <p className="body-copy mt-1 text-sm">
-                              {step.text}
-                            </p>
-                          </div>
-                        </div>
-                      </FadeIn>
-                    );
-                  })}
+                        </FadeIn>
+                      );
+                    },
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1031,25 +1340,29 @@ export default function FreshcoyApp() {
                   <p className="mt-5 max-w-md text-sm leading-7 text-[#b5c3b8]">
                     Perubahan warna antosianin berkaitan dengan perubahan
                     bentuk struktur molekul yang dapat dipengaruhi oleh kondisi
-                    pH dan kesetimbangan antar bentuknya.
+                    lingkungan dan kesetimbangan antar bentuknya.
                   </p>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  {chemistry.map((item, index) => (
-                    <button
-                      type="button"
-                      key={item.name}
-                      onClick={() => setChem(index)}
-                      className={`rounded-full border px-4 py-2.5 text-xs font-bold transition ${
-                        index === chem
-                          ? "border-white bg-white text-[#17301f]"
-                          : "border-white/15 bg-white/[.03] text-white/70 hover:bg-white/10"
-                      }`}
-                    >
-                      {item.name}
-                    </button>
-                  ))}
+                  {chemistry.map(
+                    (item, index) => (
+                      <button
+                        type="button"
+                        key={item.name}
+                        onClick={() =>
+                          setChem(index)
+                        }
+                        className={`rounded-full border px-4 py-2.5 text-xs font-bold transition ${
+                          index === chem
+                            ? "border-white bg-white text-[#17301f]"
+                            : "border-white/15 bg-white/[.03] text-white/70 hover:bg-white/10"
+                        }`}
+                      >
+                        {item.name}
+                      </button>
+                    ),
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1084,9 +1397,13 @@ export default function FreshcoyApp() {
 
                 <div className="relative mt-10 h-[310px]">
                   <div className="absolute left-[7%] right-[7%] top-1/2 h-px bg-white/10" />
+
                   <div className="absolute left-[10%] top-[18%] bottom-[14%] border-l border-dashed border-white/10" />
+
                   <div className="absolute left-[35%] top-[12%] bottom-[8%] border-l border-dashed border-white/10" />
+
                   <div className="absolute left-[60%] top-[18%] bottom-[14%] border-l border-dashed border-white/10" />
+
                   <div className="absolute right-[10%] top-[12%] bottom-[8%] border-l border-dashed border-white/10" />
 
                   <AnimatePresence mode="wait">
@@ -1163,8 +1480,7 @@ export default function FreshcoyApp() {
                     <div
                       className="mt-7 inline-flex rounded-full px-3 py-1.5 text-[10px] font-black uppercase tracking-[.12em]"
                       style={{
-                        background:
-                          `${chemistryColors[chem]}33`,
+                        background: `${chemistryColors[chem]}33`,
                         color: "#e8f1e8",
                       }}
                     >
@@ -1181,10 +1497,10 @@ export default function FreshcoyApp() {
 
                     <div className="mt-8 border-t border-white/10 pt-7">
                       <p className="text-xs leading-6 text-[#95a69a]">
-                        Catatan: website ini menjelaskan konsep perubahan warna
-                        antosianin secara sederhana. Hubungan warna dengan
-                        kondisi produk perlu dibuktikan dan dikalibrasi melalui
-                        penelitian.
+                        Catatan: perubahan warna antosianin dipengaruhi oleh
+                        kondisi lingkungan dan perubahan struktur molekul.
+                        Hubungan warna dengan kondisi produk tetap perlu
+                        dibuktikan melalui hasil penelitian dan kalibrasi.
                       </p>
                     </div>
                   </motion.div>
@@ -1249,40 +1565,45 @@ export default function FreshcoyApp() {
             </div>
 
             <div className="mt-12 grid gap-4 md:grid-cols-2">
-              {guideCards.map((card, index) => {
-                const Icon = card.icon;
+              {guideCards.map(
+                (card, index) => {
+                  const Icon = card.icon;
 
-                return (
-                  <FadeIn
-                    key={card.title}
-                    delay={index * 0.08}
-                  >
-                    <div className="rounded-[28px] border border-[#dde5dd] bg-[#f7f8f3] p-7 sm:p-8">
-                      <div className="flex items-center gap-3">
-                        <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#2d6a3f] shadow-sm">
-                          <Icon size={18} />
+                  return (
+                    <FadeIn
+                      key={card.title}
+                      delay={index * 0.08}
+                    >
+                      <div className="rounded-[28px] border border-[#dde5dd] bg-[#f7f8f3] p-7 sm:p-8">
+                        <div className="flex items-center gap-3">
+                          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#2d6a3f] shadow-sm">
+                            <Icon size={18} />
+                          </div>
+
+                          <h3 className="text-xl font-black">
+                            {card.title}
+                          </h3>
                         </div>
 
-                        <h3 className="text-xl font-black">
-                          {card.title}
-                        </h3>
-                      </div>
+                        <ul className="mt-7 grid gap-3">
+                          {card.items.map(
+                            (item) => (
+                              <li
+                                key={item}
+                                className="flex gap-3 text-sm text-[#536158]"
+                              >
+                                <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fb596]" />
 
-                      <ul className="mt-7 grid gap-3">
-                        {card.items.map((item) => (
-                          <li
-                            key={item}
-                            className="flex gap-3 text-sm text-[#536158]"
-                          >
-                            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#8fb596]" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </FadeIn>
-                );
-              })}
+                                {item}
+                              </li>
+                            ),
+                          )}
+                        </ul>
+                      </div>
+                    </FadeIn>
+                  );
+                },
+              )}
             </div>
 
             <div className="mt-5 rounded-[28px] border border-[#eadcae] bg-[#fbf7e8] p-6 text-sm leading-6 text-[#665a2f]">
@@ -1302,7 +1623,9 @@ export default function FreshcoyApp() {
             <FadeIn>
               <div className="grid gap-12 lg:grid-cols-[.78fr_1.22fr] lg:items-start">
                 <div>
-                  <div className="eyebrow">Penyimpanan</div>
+                  <div className="eyebrow">
+                    Penyimpanan
+                  </div>
 
                   <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
                     Perubahan tidak selalu berarti harus langsung dibuang.
@@ -1315,28 +1638,93 @@ export default function FreshcoyApp() {
                 </div>
 
                 <div className="space-y-3">
-                  {storageSteps.map((step, index) => (
-                    <FadeIn
-                      key={step.number}
-                      delay={index * 0.05}
-                    >
-                      <div className="group flex gap-5 rounded-2xl border border-[#dfe6df] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-[0_16px_45px_rgba(33,56,40,.08)]">
-                        <div className="text-xs font-black text-[#94a095]">
-                          {step.number}
-                        </div>
+                  {storageSteps.map(
+                    (step, index) => (
+                      <FadeIn
+                        key={step.number}
+                        delay={index * 0.05}
+                      >
+                        <div className="group flex gap-5 rounded-2xl border border-[#dfe6df] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-[0_16px_45px_rgba(33,56,40,.08)]">
+                          <div className="text-xs font-black text-[#94a095]">
+                            {step.number}
+                          </div>
 
-                        <div>
-                          <h3 className="font-bold">
+                          <div>
+                            <h3 className="font-bold">
+                              {step.title}
+                            </h3>
+
+                            <p className="mt-1 text-sm leading-6 text-[#66706a]">
+                              {step.description}
+                            </p>
+                          </div>
+                        </div>
+                      </FadeIn>
+                    ),
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* PERLAKUAN                                                        */}
+        {/* ---------------------------------------------------------------- */}
+
+        <section
+          id="perlakuan"
+          className="scroll-mt-24 bg-white py-24"
+        >
+          <div className="container-shell">
+            <FadeIn>
+              <div className="grid gap-12 lg:grid-cols-[.72fr_1.28fr]">
+                <div>
+                  <div className="eyebrow">
+                    Perlakuan penelitian
+                  </div>
+
+                  <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
+                    Apa yang dilakukan pada pakcoy selama penelitian?
+                  </h2>
+
+                  <p className="body-copy mt-5 max-w-md">
+                    Bagian ini menjelaskan perlakuan yang diberikan kepada
+                    sampel agar pengunjung memahami bagaimana perubahan
+                    indikator dibandingkan dengan kondisi sayur.
+                  </p>
+
+                  <div className="mt-6 rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-xs leading-6 text-[#665a2f]">
+                    <strong>Penting:</strong> rincian suhu, kelembapan, jumlah
+                    sampel, dan lama pengamatan harus disesuaikan dengan
+                    metode penelitian yang benar-benar dilakukan oleh tim.
+                  </div>
+                </div>
+
+                <div className="relative border-l border-[#cbd5cc] pl-7">
+                  {treatmentSteps.map(
+                    (step, index) => (
+                      <FadeIn
+                        key={step.number}
+                        delay={index * 0.06}
+                        className="relative pb-10 last:pb-0"
+                      >
+                        <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-white text-[10px] font-black text-[#526158]">
+                          {step.number}
+                        </span>
+
+                        <div className="rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
+                          <h3 className="font-black">
                             {step.title}
                           </h3>
 
-                          <p className="mt-1 text-sm leading-6 text-[#66706a]">
+                          <p className="mt-2 text-sm leading-6 text-[#66706a]">
                             {step.description}
                           </p>
                         </div>
-                      </div>
-                    </FadeIn>
-                  ))}
+                      </FadeIn>
+                    ),
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1360,62 +1748,118 @@ export default function FreshcoyApp() {
                   </div>
 
                   <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
-                    Amati perubahannya, jangan hanya menunggu tanggal.
+                    Hubungkan perubahan warna dengan kondisi pakcoy.
                   </h2>
 
                   <p className="body-copy mt-5 max-w-md">
-                    Freshcoy membantu pengguna mengamati perubahan indikator dan
-                    kondisi pakcoy selama penyimpanan. Timeline ini bersifat
-                    gambaran proses, bukan umur simpan pasti.
+                    Selama penyimpanan, pakcoy tetap melakukan proses
+                    metabolisme. Respirasi, perubahan senyawa, kehilangan air,
+                    dan perubahan kondisi di dalam kemasan dapat memengaruhi
+                    kualitas sayur serta lingkungan tempat indikator berada.
                   </p>
                 </div>
 
                 <div className="relative border-l border-[#cbd5cc] pl-7">
-                  {timelineItems.map((item, index) => (
-                    <FadeIn
-                      key={item.time}
-                      delay={index * 0.08}
-                      className="relative pb-10 last:pb-0"
-                    >
-                      <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#f3f5ef]">
-                        <span
-                          className="h-2.5 w-2.5 rounded-full"
-                          style={{
-                            background: item.color,
-                          }}
-                        />
-                      </span>
-
-                      <div className="rounded-[22px] border border-[#dce4dc] bg-white p-6">
-                        <div className="flex flex-wrap items-center justify-between gap-3">
-                          <span className="text-xs font-black uppercase tracking-[.12em] text-[#647067]">
-                            {item.time}
-                          </span>
-
+                  {timelineItems.map(
+                    (item, index) => (
+                      <FadeIn
+                        key={item.time}
+                        delay={index * 0.08}
+                        className="relative pb-10 last:pb-0"
+                      >
+                        <span className="absolute -left-[43px] grid h-8 w-8 place-items-center rounded-full border border-[#c7d0c7] bg-[#f3f5ef]">
                           <span
-                            className="rounded-full px-3 py-1 text-[10px] font-bold"
+                            className="h-2.5 w-2.5 rounded-full"
                             style={{
-                              background: `${item.color}18`,
-                              color: item.color,
+                              background:
+                                item.color,
                             }}
-                          >
-                            {item.title}
-                          </span>
-                        </div>
+                          />
+                        </span>
 
-                        <p className="mt-3 text-sm leading-6 text-[#66706a]">
-                          {item.text}
-                        </p>
-                      </div>
-                    </FadeIn>
-                  ))}
+                        <div className="rounded-[22px] border border-[#dce4dc] bg-white p-6">
+                          <div className="flex flex-wrap items-center justify-between gap-3">
+                            <span className="text-xs font-black uppercase tracking-[.12em] text-[#647067]">
+                              {item.time}
+                            </span>
+
+                            <span
+                              className="rounded-full px-3 py-1 text-[10px] font-bold"
+                              style={{
+                                background: `${item.color}18`,
+                                color: item.color,
+                              }}
+                            >
+                              {item.title}
+                            </span>
+                          </div>
+
+                          <p className="mt-3 text-sm leading-6 text-[#66706a]">
+                            {item.text}
+                          </p>
+                        </div>
+                      </FadeIn>
+                    ),
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.08}>
+              <div className="mt-10 grid gap-4 md:grid-cols-3">
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Perubahan fisiologis
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Respirasi dan kehilangan air
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Setelah dipanen, pakcoy tetap melakukan respirasi. Proses
+                    ini disertai penggunaan cadangan makanan dan kehilangan
+                    air yang dapat memengaruhi kesegaran serta tekstur.
+                  </p>
+                </div>
+
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Perubahan kimiawi
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Kondisi lingkungan di dalam kemasan berubah
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Metabolisme dan perubahan kondisi penyimpanan dapat
+                    mengubah lingkungan mikro di dalam kemasan. Kondisi tersebut
+                    dapat berkaitan dengan respons indikator antosianin.
+                  </p>
+                </div>
+
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Respons indikator
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Struktur antosianin mengalami perubahan
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Perubahan kondisi seperti pH dapat memengaruhi kesetimbangan
+                    bentuk antosianin sehingga warna indikator dapat bergeser.
+                  </p>
                 </div>
               </div>
             </FadeIn>
 
             <div className="mt-8 rounded-2xl border border-[#dde5dd] bg-white p-5 text-xs leading-6 text-[#66706a]">
-              Lama perubahan dapat dipengaruhi oleh kondisi awal pakcoy, suhu,
-              kelembapan, jenis kemasan, dan lama penyimpanan.
+              Perubahan warna indikator tidak boleh dipahami sebagai hubungan
+              satu banding satu dengan tingkat kesegaran. Hubungan tersebut
+              perlu didukung data penelitian dan kalibrasi yang sesuai.
             </div>
           </div>
         </section>
@@ -1442,39 +1886,40 @@ export default function FreshcoyApp() {
 
                   <p className="body-copy mt-5 max-w-md">
                     Bagian ini menjelaskan alur penelitian dengan bahasa
-                    sederhana, sehingga tetap mudah diikuti pengunjung umum
-                    dan juri.
+                    sederhana agar mudah diikuti oleh pengunjung umum dan juri.
                   </p>
                 </div>
 
                 <div className="grid gap-3 sm:grid-cols-2">
-                  {researchSteps.map((step, index) => (
-                    <FadeIn
-                      key={step.number}
-                      delay={index * 0.04}
-                    >
-                      <div className="rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-5">
-                        <div className="flex items-center justify-between gap-4">
-                          <span className="text-[10px] font-black tracking-[.14em] text-[#8a948d]">
-                            {step.number}
-                          </span>
+                  {researchSteps.map(
+                    (step, index) => (
+                      <FadeIn
+                        key={step.number}
+                        delay={index * 0.04}
+                      >
+                        <div className="rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-5">
+                          <div className="flex items-center justify-between gap-4">
+                            <span className="text-[10px] font-black tracking-[.14em] text-[#8a948d]">
+                              {step.number}
+                            </span>
 
-                          <FlaskConical
-                            size={17}
-                            className="text-[#315f3f]"
-                          />
+                            <FlaskConical
+                              size={17}
+                              className="text-[#315f3f]"
+                            />
+                          </div>
+
+                          <h3 className="mt-7 text-base font-black">
+                            {step.title}
+                          </h3>
+
+                          <p className="mt-2 text-xs leading-6 text-[#66706a]">
+                            {step.text}
+                          </p>
                         </div>
-
-                        <h3 className="mt-7 text-base font-black">
-                          {step.title}
-                        </h3>
-
-                        <p className="mt-2 text-xs leading-6 text-[#66706a]">
-                          {step.text}
-                        </p>
-                      </div>
-                    </FadeIn>
-                  ))}
+                      </FadeIn>
+                    ),
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1498,68 +1943,199 @@ export default function FreshcoyApp() {
                   </div>
 
                   <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
-                    Ruang untuk data eksperimen.
+                    Perubahan yang teramati selama penyimpanan.
                   </h2>
                 </div>
 
                 <p className="body-copy max-w-md text-sm">
-                  Data di bawah sengaja belum diisi. Isi hanya dengan hasil
-                  pengujian tim yang sebenarnya.
+                  Tabel berikut merangkum hasil pengamatan indikator warna dan
+                  kondisi fisik pakcoy selama proses penyimpanan.
                 </p>
               </div>
             </FadeIn>
 
             <FadeIn delay={0.05}>
-              <div className="mt-10 overflow-hidden rounded-[26px] border border-[#d8e1d8] bg-white">
+              <div className="mt-10 overflow-hidden rounded-[26px] border border-[#d8e1d8] bg-white shadow-[0_18px_50px_rgba(33,56,40,.05)]">
                 <div className="overflow-x-auto">
-                  <table className="min-w-[680px] w-full border-collapse text-left">
+                  <table className="min-w-[760px] w-full border-collapse text-left">
                     <thead className="bg-[#f7f8f3] text-[10px] font-black uppercase tracking-[.12em] text-[#707b73]">
                       <tr>
-                        <th className="px-5 py-4">
+                        <th className="border-b border-[#e4e9e3] px-5 py-4">
                           Waktu pengamatan
                         </th>
 
-                        <th className="px-5 py-4">
+                        <th className="border-b border-[#e4e9e3] px-5 py-4">
                           Warna indikator
                         </th>
 
-                        <th className="px-5 py-4">
+                        <th className="border-b border-[#e4e9e3] px-5 py-4">
                           Kondisi pakcoy
                         </th>
 
-                        <th className="px-5 py-4">
+                        <th className="border-b border-[#e4e9e3] px-5 py-4">
                           Catatan
                         </th>
                       </tr>
                     </thead>
 
                     <tbody className="divide-y divide-[#e4e9e3] text-sm text-[#59655c]">
-                      {observationRows.map((row) => (
-                        <tr key={row.day}>
-                          <td className="px-5 py-4 font-bold text-[#25372b]">
-                            {row.day}
-                          </td>
+                      {observationRows.map(
+                        (row, index) => (
+                          <motion.tr
+                            key={row.day}
+                            initial={{
+                              opacity: 0,
+                              y: 8,
+                            }}
+                            whileInView={{
+                              opacity: 1,
+                              y: 0,
+                            }}
+                            viewport={{
+                              once: true,
+                              amount: 0.2,
+                            }}
+                            transition={{
+                              duration: 0.4,
+                              delay: index * 0.06,
+                              ease,
+                            }}
+                            className="transition hover:bg-[#fbfcf9]"
+                          >
+                            <td className="px-5 py-5 align-top">
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className="h-2.5 w-2.5 rounded-full"
+                                  style={{
+                                    background:
+                                      observationIndicatorColors[
+                                        index
+                                      ] ?? "#94a095",
+                                  }}
+                                />
 
-                          <td className="px-5 py-4">
-                            {row.color}
-                          </td>
+                                <span className="font-black text-[#25372b]">
+                                  {row.day}
+                                </span>
+                              </div>
+                            </td>
 
-                          <td className="px-5 py-4">
-                            {row.condition}
-                          </td>
+                            <td className="px-5 py-5 align-top">
+                              <span
+                                className={`inline-flex rounded-full px-3 py-1.5 text-xs font-bold ${
+                                  index === 0
+                                    ? "bg-[#f0eafa] text-[#65468e]"
+                                    : index === 1
+                                      ? "bg-[#f0eafa] text-[#65468e]"
+                                      : index === 2
+                                        ? "bg-[#f0eafa] text-[#65468e]"
+                                        : "bg-[#f8f2dd] text-[#806f32]"
+                                }`}
+                              >
+                                {row.color}
+                              </span>
+                            </td>
 
-                          <td className="px-5 py-4">
-                            {row.note}
-                          </td>
-                        </tr>
-                      ))}
+                            <td className="max-w-[320px] px-5 py-5 align-top leading-6">
+                              {row.condition}
+                            </td>
+
+                            <td className="max-w-[280px] px-5 py-5 align-top leading-6 text-[#6b766e]">
+                              {row.note}
+                            </td>
+                          </motion.tr>
+                        ),
+                      )}
                     </tbody>
                   </table>
                 </div>
 
-                <div className="border-t border-[#e4e9e3] bg-[#fbfcf9] p-5 text-xs leading-6 text-[#66706a]">
-                  Data hasil eksperimen akan ditampilkan setelah pengujian
-                  selesai.
+                <div className="border-t border-[#e4e9e3] bg-[#fbfcf9] p-5">
+                  <div className="flex items-start gap-3">
+                    <div className="mt-1 h-2 w-2 shrink-0 rounded-full bg-[#6c43a4]" />
+
+                    <p className="text-xs leading-6 text-[#66706a]">
+                      Hasil pengamatan menunjukkan adanya perubahan warna
+                      indikator yang diamati bersamaan dengan perubahan kondisi
+                      fisik pakcoy selama penyimpanan. Data ini digunakan
+                      sebagai bahan pengamatan dan bukan sebagai satu-satunya
+                      dasar untuk menentukan keamanan pangan.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.1}>
+              <div className="mt-6 grid gap-3 md:grid-cols-3">
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Hari awal
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Kondisi awal relatif baik
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Pakcoy masih tampak segar dan indikator berada pada warna
+                    awal.
+                  </p>
+                </div>
+
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Perubahan
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Warna indikator mulai bergeser
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Perubahan warna menjadi salah satu informasi yang diamati
+                    bersama kondisi fisik pakcoy.
+                  </p>
+                </div>
+
+                <div className="rounded-[24px] border border-[#dce5dc] bg-white p-6">
+                  <div className="text-[10px] font-black uppercase tracking-[.14em] text-[#7a857d]">
+                    Hari terakhir
+                  </div>
+
+                  <h3 className="mt-4 text-lg font-black text-[#25372b]">
+                    Indikator berubah menjadi kuning
+                  </h3>
+
+                  <p className="mt-2 text-sm leading-6 text-[#66706a]">
+                    Pada hari ke-4, indikator berubah dari ungu menjadi kuning
+                    saat kondisi fisik pakcoy semakin menurun.
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.15}>
+              <div className="mt-6 rounded-[24px] border border-[#eadcae] bg-[#fbf7e8] p-6">
+                <div className="flex items-start gap-4">
+                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white text-[#806f32] shadow-sm">
+                    <ClipboardList size={18} />
+                  </div>
+
+                  <div>
+                    <h3 className="font-black text-[#665a2f]">
+                      Interpretasi hasil
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-[#6f6338]">
+                      Pada pengamatan, indikator belum menunjukkan perubahan
+                      warna yang jelas pada hari ke-1 sampai hari ke-3.
+                      Perubahan indikator terlihat pada hari ke-4 ketika kondisi
+                      pakcoy semakin menurun. Hal ini menunjukkan bahwa waktu
+                      pemasangan indikator juga perlu diperhatikan dalam proses
+                      penelitian.
+                    </p>
+                  </div>
                 </div>
               </div>
             </FadeIn>
@@ -1598,44 +2174,51 @@ export default function FreshcoyApp() {
                     [
                       {
                         title: "Indikator warna",
-                        text: "Perubahan warna pada indikator Freshcoy.",
+                        text:
+                          "Perubahan warna pada indikator Freshcoy.",
                         icon: FlaskConical,
                       },
                       {
                         title: "Kondisi fisik",
-                        text: "Warna daun, kesegaran, tekstur, batang, dan kerusakan yang terlihat.",
+                        text:
+                          "Warna daun, kesegaran, tekstur, batang, dan kerusakan yang terlihat.",
                         icon: Sprout,
                       },
                       {
-                        title: "Kondisi penyimpanan",
-                        text: "Kondisi awal, suhu, kelembapan, jenis kemasan, dan lama penyimpanan.",
+                        title:
+                          "Kondisi penyimpanan",
+                        text:
+                          "Kondisi awal, suhu, kelembapan, jenis kemasan, dan lama penyimpanan.",
                         icon: ClipboardList,
                       },
                     ] satisfies InfoCard[]
-                  ).map((card, index) => {
-                    const Icon = card.icon;
+                  ).map(
+                    (card, index) => {
+                      const Icon =
+                        card.icon;
 
-                    return (
-                      <FadeIn
-                        key={card.title}
-                        delay={index * 0.07}
-                      >
-                        <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
-                          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#315f3f] shadow-sm">
-                            <Icon size={18} />
+                      return (
+                        <FadeIn
+                          key={card.title}
+                          delay={index * 0.07}
+                        >
+                          <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
+                            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white text-[#315f3f] shadow-sm">
+                              <Icon size={18} />
+                            </div>
+
+                            <h3 className="mt-7 font-black">
+                              {card.title}
+                            </h3>
+
+                            <p className="mt-2 text-xs leading-6 text-[#66706a]">
+                              {card.text}
+                            </p>
                           </div>
-
-                          <h3 className="mt-7 font-black">
-                            {card.title}
-                          </h3>
-
-                          <p className="mt-2 text-xs leading-6 text-[#66706a]">
-                            {card.text}
-                          </p>
-                        </div>
-                      </FadeIn>
-                    );
-                  })}
+                        </FadeIn>
+                      );
+                    },
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1667,32 +2250,35 @@ export default function FreshcoyApp() {
             </FadeIn>
 
             <div className="mt-10 grid gap-3 md:grid-cols-2">
-              {projectComponents.map((component, index) => {
-                const Icon = component.icon;
+              {projectComponents.map(
+                (component, index) => {
+                  const Icon =
+                    component.icon;
 
-                return (
-                  <FadeIn
-                    key={component.title}
-                    delay={index * 0.07}
-                  >
-                    <div className="flex gap-4 rounded-[22px] border border-[#dfe6df] bg-white p-6">
-                      <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#eef4ed] text-[#2b613c]">
-                        <Icon size={19} />
+                  return (
+                    <FadeIn
+                      key={component.title}
+                      delay={index * 0.07}
+                    >
+                      <div className="flex gap-4 rounded-[22px] border border-[#dfe6df] bg-white p-6">
+                        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#eef4ed] text-[#2b613c]">
+                          <Icon size={19} />
+                        </div>
+
+                        <div>
+                          <h3 className="font-black">
+                            {component.title}
+                          </h3>
+
+                          <p className="mt-1 text-sm leading-6 text-[#66706a]">
+                            {component.text}
+                          </p>
+                        </div>
                       </div>
-
-                      <div>
-                        <h3 className="font-black">
-                          {component.title}
-                        </h3>
-
-                        <p className="mt-1 text-sm leading-6 text-[#66706a]">
-                          {component.text}
-                        </p>
-                      </div>
-                    </div>
-                  </FadeIn>
-                );
-              })}
+                    </FadeIn>
+                  );
+                },
+              )}
             </div>
           </div>
         </section>
@@ -1719,31 +2305,34 @@ export default function FreshcoyApp() {
                 </div>
 
                 <div className="grid gap-3 md:grid-cols-3">
-                  {whyCards.map((card, index) => {
-                    const Icon = card.icon;
+                  {whyCards.map(
+                    (card, index) => {
+                      const Icon =
+                        card.icon;
 
-                    return (
-                      <FadeIn
-                        key={card.title}
-                        delay={index * 0.07}
-                      >
-                        <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
-                          <Icon
-                            size={19}
-                            className="text-[#315f3f]"
-                          />
+                      return (
+                        <FadeIn
+                          key={card.title}
+                          delay={index * 0.07}
+                        >
+                          <div className="rounded-[24px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
+                            <Icon
+                              size={19}
+                              className="text-[#315f3f]"
+                            />
 
-                          <h3 className="mt-8 font-black">
-                            {card.title}
-                          </h3>
+                            <h3 className="mt-8 font-black">
+                              {card.title}
+                            </h3>
 
-                          <p className="mt-2 text-xs leading-6 text-[#66706a]">
-                            {card.text}
-                          </p>
-                        </div>
-                      </FadeIn>
-                    );
-                  })}
+                            <p className="mt-2 text-xs leading-6 text-[#66706a]">
+                              {card.text}
+                            </p>
+                          </div>
+                        </FadeIn>
+                      );
+                    },
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -1751,7 +2340,7 @@ export default function FreshcoyApp() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* FOOD WASTE + SARAN PEMANFAATAN                                   */}
+        {/* FOOD WASTE                                                       */}
         {/* ---------------------------------------------------------------- */}
 
         <section
@@ -1792,31 +2381,32 @@ export default function FreshcoyApp() {
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-3">
-                  {foodWasteCards.map((card, index) => (
-                    <FadeIn
-                      key={card.title}
-                      delay={index * 0.08}
-                    >
-                      <div
-                        className={`min-h-[190px] rounded-[26px] p-6 ${card.className}`}
+                  {foodWasteCards.map(
+                    (card, index) => (
+                      <FadeIn
+                        key={card.title}
+                        delay={index * 0.08}
                       >
-                        <Recycle size={20} />
+                        <div
+                          className={`min-h-[190px] rounded-[26px] p-6 ${card.className}`}
+                        >
+                          <Recycle size={20} />
 
-                        <h3 className="mt-12 font-black">
-                          {card.title}
-                        </h3>
+                          <h3 className="mt-12 font-black">
+                            {card.title}
+                          </h3>
 
-                        <p className="mt-2 text-sm leading-6 text-[#5c665e]">
-                          {card.description}
-                        </p>
-                      </div>
-                    </FadeIn>
-                  ))}
+                          <p className="mt-2 text-sm leading-6 text-[#5c665e]">
+                            {card.description}
+                          </p>
+                        </div>
+                      </FadeIn>
+                    ),
+                  )}
                 </div>
               </div>
             </FadeIn>
 
-            {/* Saran Pemanfaatan Pakcoy */}
             <FadeIn delay={0.08}>
               <div className="mt-16 border-t border-[#dde5dd] pt-12">
                 <div className="eyebrow">
@@ -1844,10 +2434,9 @@ export default function FreshcoyApp() {
                 </div>
 
                 <div className="mt-8 grid gap-4 md:grid-cols-3">
-                  {/* Kondisi masih baik */}
                   <div className="rounded-[26px] border border-[#dce7dc] bg-[#f3f8f2] p-6">
                     <div className="flex items-center gap-3">
-                      <span className="h-3 w-3 rounded-full bg-[#5b9b55]" />
+                      <span className="h-3 w-3 rounded-full bg-[#6c43a4]" />
 
                       <h4 className="text-base font-black">
                         Kondisi masih baik
@@ -1860,13 +2449,12 @@ export default function FreshcoyApp() {
 
                     <ul className="mt-4 space-y-2 text-sm text-[#4f5d53]">
                       <li>• Salad pakcoy</li>
-                      <li>• Pakcoy Kuah Bening</li>
-                      <li>• Pakcoy With Dressing lemon</li>
+                      <li>• Pakcoy kuah bening</li>
+                      <li>• Pakcoy with dressing lemon</li>
                       <li>• Capcay</li>
                     </ul>
                   </div>
 
-                  {/* Mulai kurang segar */}
                   <div className="rounded-[26px] border border-[#eadfb9] bg-[#fbf7e8] p-6">
                     <div className="flex items-center gap-3">
                       <span className="h-3 w-3 rounded-full bg-[#c1a044]" />
@@ -1881,16 +2469,15 @@ export default function FreshcoyApp() {
                     </p>
 
                     <ul className="mt-4 space-y-2 text-sm text-[#4f5d53]">
-                      <li>• Nasi Goreng Pakcoy</li>
-                      <li>• Sup Pakcoy</li>
-                      <li>• Keripik Pakcoy</li>
+                      <li>• Nasi goreng pakcoy</li>
+                      <li>• Sup pakcoy</li>
+                      <li>• Keripik pakcoy</li>
                     </ul>
                   </div>
 
-                  {/* Perubahan signifikan */}
                   <div className="rounded-[26px] border border-[#ead9d2] bg-[#faf2ee] p-6">
                     <div className="flex items-center gap-3">
-                      <span className="h-3 w-3 rounded-full bg-[#9b5a43]" />
+                      <span className="h-3 w-3 rounded-full bg-[#dc6b8a]" />
 
                       <h4 className="text-base font-black">
                         Kondisi mengalami perubahan signifikan
@@ -1909,7 +2496,7 @@ export default function FreshcoyApp() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* DEMO                                                              */}
+        {/* DEMO                                                             */}
         {/* ---------------------------------------------------------------- */}
 
         <section
@@ -1939,6 +2526,7 @@ export default function FreshcoyApp() {
                     className="mt-8 rounded-full bg-white px-5 py-3.5 text-sm font-black text-[#173a24] transition hover:-translate-y-0.5"
                   >
                     Ubah tahap indikator
+
                     <Sparkles
                       className="ml-2 inline"
                       size={15}
@@ -1948,33 +2536,40 @@ export default function FreshcoyApp() {
 
                 <div className="rounded-[30px] border border-white/10 bg-white/[.06] p-6 sm:p-8">
                   <div className="grid gap-3 sm:grid-cols-4">
-                    {stages.map((item, index) => (
-                      <div
-                        key={item.id}
-                        className={`rounded-2xl border p-4 transition ${
-                          index === stageIndex
-                            ? "border-white bg-white/10"
-                            : "border-white/10 bg-transparent"
-                        }`}
-                      >
-                        <div className="flex items-center gap-2">
-                          <span
-                            className="h-3 w-3 rounded-full"
-                            style={{
-                              background: item.color,
-                            }}
-                          />
+                    {interactiveStages.map(
+                      (item, index) => (
+                        <button
+                          type="button"
+                          key={item.id}
+                          onClick={() =>
+                            updateStage(index)
+                          }
+                          className={`rounded-2xl border p-4 text-left transition ${
+                            index === stageIndex
+                              ? "border-white bg-white/10"
+                              : "border-white/10 bg-transparent"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <span
+                              className="h-3 w-3 rounded-full"
+                              style={{
+                                background:
+                                  item.color,
+                              }}
+                            />
 
-                          <span className="text-xs font-bold">
-                            {item.label}
-                          </span>
-                        </div>
+                            <span className="text-xs font-bold">
+                              {item.label}
+                            </span>
+                          </div>
 
-                        <p className="mt-3 text-xs leading-5 text-[#bdcabe]">
-                          {item.title}
-                        </p>
-                      </div>
-                    ))}
+                          <p className="mt-3 text-xs leading-5 text-[#bdcabe]">
+                            {item.title}
+                          </p>
+                        </button>
+                      ),
+                    )}
                   </div>
 
                   <div className="mt-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0f2a19] p-5">
@@ -1985,7 +2580,8 @@ export default function FreshcoyApp() {
 
                     <p className="text-xs leading-5 text-[#c2d0c4]">
                       Demo ini bersifat simulasi untuk membantu menjelaskan
-                      konsep indikator.
+                      konsep indikator dan bukan pengganti pemeriksaan mutu
+                      pangan secara menyeluruh.
                     </p>
                   </div>
                 </div>
@@ -1995,7 +2591,146 @@ export default function FreshcoyApp() {
         </section>
 
         {/* ---------------------------------------------------------------- */}
-        {/* TENTANG PROYEK                                                  */}
+        {/* KESIMPULAN                                                       */}
+        {/* ---------------------------------------------------------------- */}
+
+        <section
+          id="kesimpulan"
+          className="scroll-mt-24 bg-[#eef2ea] py-24"
+        >
+          <div className="container-shell">
+            <FadeIn>
+              <div className="grid gap-12 lg:grid-cols-[.72fr_1.28fr]">
+                <div>
+                  <div className="eyebrow">
+                    Kesimpulan
+                  </div>
+
+                  <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
+                    Kesimpulan penelitian.
+                  </h2>
+
+                  <p className="body-copy mt-5 max-w-md">
+                    Setiap poin kesimpulan disusun untuk menjawab tujuan
+                    penelitian secara langsung.
+                  </p>
+                </div>
+
+                <div className="space-y-3">
+                  {conclusions.map(
+                    (text, index) => (
+                      <FadeIn
+                        key={text}
+                        delay={index * 0.06}
+                      >
+                        <div className="flex gap-4 rounded-[22px] border border-[#dce5dc] bg-white p-6">
+                          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#173a24] text-xs font-black text-white">
+                            {String(
+                              index + 1,
+                            ).padStart(2, "0")}
+                          </div>
+
+                          <p className="text-sm leading-7 text-[#536158]">
+                            {text}
+                          </p>
+                        </div>
+                      </FadeIn>
+                    ),
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.1}>
+              <div className="mt-12 border-t border-[#d9e2da] pt-10">
+                <div className="eyebrow">
+                  Tujuan penelitian
+                </div>
+
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  {researchGoals.map(
+                    (goal) => (
+                      <div
+                        key={goal.number}
+                        className="rounded-[22px] border border-[#dce5dc] bg-white p-6"
+                      >
+                        <div className="text-[10px] font-black tracking-[.14em] text-[#8a948d]">
+                          TUJUAN{" "}
+                          {goal.number}
+                        </div>
+
+                        <p className="mt-4 text-sm leading-6 text-[#66706a]">
+                          {goal.text}
+                        </p>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* SARAN                                                            */}
+        {/* ---------------------------------------------------------------- */}
+
+        <section
+          id="saran"
+          className="scroll-mt-24 bg-white py-24"
+        >
+          <div className="container-shell">
+            <FadeIn>
+              <div className="grid gap-12 lg:grid-cols-[.72fr_1.28fr]">
+                <div>
+                  <div className="eyebrow">
+                    Saran penelitian
+                  </div>
+
+                  <h2 className="display mt-3 text-4xl font-black sm:text-5xl">
+                    Apa yang masih perlu dilakukan?
+                  </h2>
+
+                  <p className="body-copy mt-5 max-w-md">
+                    Saran berikut berfokus pada keterbatasan dan bagian yang
+                    belum dilakukan dalam penelitian.
+                  </p>
+                </div>
+
+                <div className="grid gap-3">
+                  {suggestions.map(
+                    (suggestion, index) => (
+                      <FadeIn
+                        key={suggestion}
+                        delay={index * 0.06}
+                      >
+                        <div className="flex gap-4 rounded-[22px] border border-[#dde5dd] bg-[#f7f8f3] p-6">
+                          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-[#cfd9d0] bg-white text-xs font-black text-[#526158]">
+                            {String(
+                              index + 1,
+                            ).padStart(2, "0")}
+                          </div>
+
+                          <p className="text-sm leading-7 text-[#59655c]">
+                            {suggestion}
+                          </p>
+                        </div>
+                      </FadeIn>
+                    ),
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-8 rounded-2xl border border-[#eadcae] bg-[#fbf7e8] p-5 text-xs leading-6 text-[#665a2f]">
+                <strong>Catatan:</strong> sesuaikan saran dengan keterbatasan
+                penelitian yang benar-benar dialami oleh tim.
+              </div>
+            </FadeIn>
+          </div>
+        </section>
+
+        {/* ---------------------------------------------------------------- */}
+        {/* TENTANG PROYEK                                                   */}
         {/* ---------------------------------------------------------------- */}
 
         <section
@@ -2021,24 +2756,38 @@ export default function FreshcoyApp() {
 
                 <div className="grid gap-3 sm:grid-cols-2">
                   {[
-                    ["Dikembangkan oleh", "[Nama Tim]"],
-                    ["Sekolah / Institusi", "[Nama Sekolah]"],
-                    ["Tahun", "2026"],
-                    ["Bidang", "[Bidang Penelitian/Lomba]"],
-                  ].map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="rounded-[22px] border border-white/10 bg-white/[.05] p-5"
-                    >
-                      <div className="text-[10px] font-black uppercase tracking-[.13em] text-[#8ea092]">
-                        {label}
-                      </div>
+                    [
+                      "Dikembangkan oleh",
+                      "[Nama Tim]",
+                    ],
+                    [
+                      "Sekolah / Institusi",
+                      "[Nama Sekolah]",
+                    ],
+                    [
+                      "Tahun",
+                      "2026",
+                    ],
+                    [
+                      "Bidang",
+                      "[Bidang Penelitian/Lomba]",
+                    ],
+                  ].map(
+                    ([label, value]) => (
+                      <div
+                        key={label}
+                        className="rounded-[22px] border border-white/10 bg-white/[.05] p-5"
+                      >
+                        <div className="text-[10px] font-black uppercase tracking-[.13em] text-[#8ea092]">
+                          {label}
+                        </div>
 
-                      <div className="mt-3 text-sm font-bold text-[#eef3ed]">
-                        {value}
+                        <div className="mt-3 text-sm font-bold text-[#eef3ed]">
+                          {value}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ),
+                  )}
                 </div>
               </div>
             </FadeIn>
@@ -2061,28 +2810,26 @@ export default function FreshcoyApp() {
                   "[Referensi smart packaging]",
                   "[Referensi food waste]",
                   "[Referensi penyimpanan pakcoy]",
-                ].map((reference) => (
-                  <div
-                    key={reference}
-                    className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-xs text-[#bdc8bf]"
-                  >
-                    <BookOpen
-                      size={14}
-                      className="shrink-0"
-                    />
+                ].map(
+                  (reference) => (
+                    <div
+                      key={reference}
+                      className="flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 text-xs text-[#bdc8bf]"
+                    >
+                      <BookOpen
+                        size={14}
+                        className="shrink-0"
+                      />
 
-                    <span>{reference}</span>
-                  </div>
-                ))}
+                      <span>{reference}</span>
+                    </div>
+                  ),
+                )}
               </div>
             </div>
           </div>
         </section>
       </main>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* FOOTER                                                             */}
-      {/* ------------------------------------------------------------------ */}
 
       <footer className="border-t border-[var(--line)] bg-[#f7f7f2] py-10">
         <div className="container-shell flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
@@ -2092,136 +2839,15 @@ export default function FreshcoyApp() {
             </div>
 
             <p className="mt-1 text-xs text-[#727c74]">
-              Scan. Check. Keep Fresh.
+              Monitor. Check. Keep Fresh.
             </p>
           </div>
 
           <div className="text-xs text-[#727c74]">
-            QR companion • Smart packaging concept for pakcoy freshness
-            monitoring.
+            Smart packaging concept for pakcoy freshness monitoring.
           </div>
         </div>
       </footer>
-
-      {/* ------------------------------------------------------------------ */}
-      {/* QR MODAL                                                           */}
-      {/* ------------------------------------------------------------------ */}
-
-      <AnimatePresence>
-        {qrOpen && (
-          <motion.div
-            className="fixed inset-0 z-[70] grid place-items-center bg-[#102017]/55 p-5 backdrop-blur-sm"
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            onClick={() => setQrOpen(false)}
-          >
-            <motion.div
-              initial={{
-                y: 20,
-                scale: 0.96,
-              }}
-              animate={{
-                y: 0,
-                scale: 1,
-              }}
-              exit={{
-                y: 20,
-                scale: 0.96,
-              }}
-              onClick={(event) => event.stopPropagation()}
-              className="w-full max-w-md rounded-[30px] bg-[#fafbf8] p-7 shadow-2xl"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <div className="eyebrow">
-                    QR simulation
-                  </div>
-
-                  <h3 className="mt-2 text-2xl font-black">
-                    Pindai untuk melihat informasi.
-                  </h3>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => setQrOpen(false)}
-                  className="grid h-9 w-9 place-items-center rounded-full border border-[#d9e0d9] bg-white"
-                  aria-label="Tutup QR simulation"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-
-              <div className="mt-8 grid place-items-center rounded-3xl border border-[#dce3dc] bg-white p-9">
-                <div className="grid h-44 w-44 place-items-center border-[10px] border-white bg-[#173a24] shadow-[0_12px_40px_rgba(23,58,36,.16)]">
-                  <div className="grid h-28 w-28 place-items-center bg-white">
-                    <QrCode
-                      size={98}
-                      strokeWidth={1.4}
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-5 text-center">
-                  <p className="font-bold">
-                    Freshcoy Information
-                  </p>
-
-                  <p className="mt-1 text-xs text-[#6a746d]">
-                    Status • Panduan • Penyimpanan • Kimia • Penelitian •
-                    Food waste
-                  </p>
-                </div>
-              </div>
-
-              <div className="mt-5 grid gap-2 sm:grid-cols-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQrOpen(false);
-
-                    document
-                      .querySelector("#status")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                  }}
-                  className="rounded-full border border-[#d8e0d9] bg-white px-5 py-3.5 text-sm font-bold text-[#173a24]"
-                >
-                  Lihat status
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setQrOpen(false);
-
-                    document
-                      .querySelector("#penelitian")
-                      ?.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                  }}
-                  className="rounded-full bg-[#173a24] px-5 py-3.5 text-sm font-bold text-white"
-                >
-                  Lihat penelitian
-                  <ArrowRight
-                    className="ml-2 inline"
-                    size={15}
-                  />
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 }
